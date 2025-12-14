@@ -41,30 +41,41 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
         return;
       }
 
+      // Log the data being sent for debugging
+      const bookingPayload = {
+        package_id: pkg.id,
+        booking_date: bookingData.date,
+        booking_time: bookingData.time,
+        customer_name: bookingData.customerName,
+        customer_email: bookingData.customerEmail,
+        customer_phone: bookingData.customerPhone,
+        num_participants: bookingData.numParticipants,
+        emergency_contact: bookingData.emergencyContact || null,
+        special_requirements: bookingData.specialRequirements || null,
+        total_price: totalPrice,
+        promo_code: promoCode || null,
+        payment_method: 'cash',
+        status: 'confirmed'
+      };
+      
+      console.log('Attempting to save booking:', bookingPayload);
+      console.log('Supabase configured:', isSupabaseConfigured);
+
       const { data, error: bookingError } = await supabase
         .from('bookings')
-        .insert({
-          package_id: pkg.id,
-          booking_date: bookingData.date,
-          booking_time: bookingData.time,
-          customer_name: bookingData.customerName,
-          customer_email: bookingData.customerEmail,
-          customer_phone: bookingData.customerPhone,
-          num_participants: bookingData.numParticipants,
-          emergency_contact: bookingData.emergencyContact || null,
-          special_requirements: bookingData.specialRequirements || null,
-          total_price: totalPrice,
-          promo_code: promoCode || null,
-          payment_method: 'cash', // Changed from 'whatsapp' to 'cash' to match database constraint
-          status: 'confirmed'
-        })
+        .insert(bookingPayload)
         .select()
         .single();
 
       if (bookingError) {
-        console.error('Supabase booking error:', bookingError);
+        console.error('Supabase booking error details:', {
+          message: bookingError.message,
+          details: bookingError.details,
+          hint: bookingError.hint,
+          code: bookingError.code
+        });
         // Show the actual error to help debug
-        setError(`Failed to save booking: ${bookingError.message}. Please try again.`);
+        setError(`Failed to save booking: ${bookingError.message}${bookingError.hint ? ' (' + bookingError.hint + ')' : ''}. Please check the browser console for details.`);
         setLoading(false);
         return;
       }
