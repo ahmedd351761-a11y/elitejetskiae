@@ -60,6 +60,7 @@ export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
@@ -68,6 +69,16 @@ export default function PackageSelection({ onSelect }: Props) {
   async function fetchPackages() {
     try {
       setError('');
+      
+      // Check if Supabase is configured first - prevents fetch errors
+      if (!isSupabaseConfigured) {
+        console.warn('Supabase not configured - using fallback packages');
+        setPackages(fallbackPackages);
+        setError('Database not configured. Using default packages.');
+        setLoading(false);
+        return;
+      }
+
       const { data, error: supabaseError } = await supabase
         .from('packages')
         .select('*')
@@ -78,23 +89,21 @@ export default function PackageSelection({ onSelect }: Props) {
         console.error('Supabase error:', supabaseError);
         // Use fallback packages if Supabase fails
         setPackages(fallbackPackages);
-        setUsingFallback(true);
-        setError('Using default packages. Database connection unavailable.');
+        setError(`Database connection error: ${supabaseError.message}. Using default packages.`);
       } else if (data && data.length > 0) {
         setPackages(data);
-        setUsingFallback(false);
+        setError(''); // Clear any previous errors
       } else {
         // No packages in database, use fallback
         setPackages(fallbackPackages);
-        setUsingFallback(true);
-        setError('No packages found. Using default packages.');
+        setError('No packages found in database. Using default packages.');
       }
     } catch (err) {
       console.error('Error fetching packages:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       // Use fallback packages on any error
       setPackages(fallbackPackages);
-      setUsingFallback(true);
-      setError('Unable to load packages from database. Using default packages.');
+      setError(`Unable to load packages: ${errorMessage}. Using default packages.`);
     } finally {
       setLoading(false);
     }
