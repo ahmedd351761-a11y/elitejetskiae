@@ -60,7 +60,6 @@ export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
-  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
