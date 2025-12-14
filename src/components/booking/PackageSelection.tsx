@@ -60,6 +60,7 @@ export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
@@ -171,8 +172,26 @@ export default function PackageSelection({ onSelect }: Props) {
                 onError={(e) => {
                   // Fallback to first default image if image fails to load
                   const target = e.target as HTMLImageElement;
-                  if (target.src !== defaultPackageImages[0]) {
-                    target.src = defaultPackageImages[0];
+                  
+                  // Extract pathname from the current src URL for comparison
+                  let currentPath: string;
+                  try {
+                    // If src is already a full URL, extract pathname
+                    const url = new URL(target.src);
+                    currentPath = url.pathname;
+                  } catch {
+                    // If src is a relative path, use it directly
+                    currentPath = target.src;
+                  }
+                  
+                  const fallbackPath = defaultPackageImages[0];
+                  
+                  // Only set fallback if we haven't already tried it (prevent infinite loop)
+                  if (currentPath !== fallbackPath) {
+                    target.src = fallbackPath;
+                  } else {
+                    // If fallback also failed, hide the image to prevent infinite loop
+                    target.style.display = 'none';
                   }
                 }}
               />
