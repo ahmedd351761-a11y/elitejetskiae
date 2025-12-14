@@ -55,7 +55,7 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
           special_requirements: bookingData.specialRequirements || null,
           total_price: totalPrice,
           promo_code: promoCode || null,
-          payment_method: 'whatsapp',
+          payment_method: 'cash', // Changed from 'whatsapp' to 'cash' to match database constraint
           status: 'confirmed'
         })
         .select()
@@ -63,26 +63,27 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
 
       if (bookingError) {
         console.error('Supabase booking error:', bookingError);
-        // If database insert fails, still generate a local reference as fallback
-        const fallbackReference = generateBookingReference();
-        console.warn('Using fallback booking reference:', fallbackReference);
-        onConfirm(fallbackReference);
+        // Show the actual error to help debug
+        setError(`Failed to save booking: ${bookingError.message}. Please try again.`);
+        setLoading(false);
         return;
       }
 
       if (data && data.booking_reference) {
+        console.log('Booking saved successfully:', data);
         onConfirm(data.booking_reference);
       } else {
-        // Fallback if no reference returned
-        const fallbackReference = generateBookingReference();
-        onConfirm(fallbackReference);
+        // This shouldn't happen, but handle it gracefully
+        console.error('Booking created but no reference returned:', data);
+        setError('Booking created but reference not generated. Please contact support.');
+        setLoading(false);
       }
     } catch (err) {
       console.error('Booking error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       
-      // Even if there's an error, generate a local reference so user can proceed
-      if (errorMessage.includes('fetch') || errorMessage.includes('network')) {
+      // Only use fallback for network errors, not database constraint errors
+      if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('Failed to fetch')) {
         const fallbackReference = generateBookingReference();
         console.warn('Network error - using fallback booking reference:', fallbackReference);
         setError('Database connection unavailable. Booking reference generated locally. You can still proceed with WhatsApp booking.');
@@ -91,10 +92,10 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
           onConfirm(fallbackReference);
         }, 2000);
       } else {
-        setError(`Error: ${errorMessage}. Please try again or contact us directly via WhatsApp.`);
+        // For other errors (like constraint violations), show error and don't proceed
+        setError(`Error: ${errorMessage}. Please check your information and try again.`);
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
