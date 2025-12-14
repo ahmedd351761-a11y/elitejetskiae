@@ -101,12 +101,23 @@ export default function PackageSelection({ onSelect }: Props) {
     }
   }
 
-  const packageImages = [
+  // Default images to cycle through if package doesn't have image_url
+  const defaultPackageImages = [
     '/burj.jpg',
     '/atlantis.jpg',
     '/skyline.jpg',
     '/loop.jpg'
   ];
+
+  // Helper function to get image for a package
+  const getPackageImage = (pkg: Package, index: number): string => {
+    // First priority: use image_url from database if available
+    if (pkg.image_url) {
+      return pkg.image_url;
+    }
+    // Fallback: cycle through default images using modulo
+    return defaultPackageImages[index % defaultPackageImages.length];
+  };
 
   if (loading) {
     return (
@@ -155,9 +166,16 @@ export default function PackageSelection({ onSelect }: Props) {
           >
             <div className="relative h-48">
               <img
-                src={packageImages[index]}
+                src={getPackageImage(pkg, index)}
                 alt={pkg.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                onError={(e) => {
+                  // Fallback to first default image if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  if (target.src !== defaultPackageImages[0]) {
+                    target.src = defaultPackageImages[0];
+                  }
+                }}
               />
               <div className="absolute top-4 right-4 bg-[#E31E24] text-white px-4 py-2 rounded-full flex items-center space-x-2">
                 <Clock size={16} />
