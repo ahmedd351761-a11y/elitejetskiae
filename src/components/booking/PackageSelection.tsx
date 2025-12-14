@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Clock, Users, CheckCircle } from 'lucide-react';
+import { Clock, Users, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { Package } from '../../types';
 import { formatPrice } from '../../utils/bookingUtils';
@@ -8,25 +8,97 @@ interface Props {
   onSelect: (pkg: Package) => void;
 }
 
+// Fallback packages in case Supabase is unavailable
+const fallbackPackages: Package[] = [
+  {
+    id: 'burj-30',
+    name: '30 Minutes - Burj Al Arab Tour',
+    duration_minutes: 30,
+    price_aed: 250,
+    description: 'Experience the thrill of jet skiing with stunning views of the iconic Burj Al Arab',
+    max_participants: 2,
+    is_active: true,
+    display_order: 1,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'atlantis-60',
+    name: '60 Minutes - Atlantis Tour',
+    duration_minutes: 60,
+    price_aed: 450,
+    description: 'Extended tour featuring Atlantis The Palm and surrounding areas',
+    max_participants: 2,
+    is_active: true,
+    display_order: 2,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'skyline-90',
+    name: '90 Minutes - Dubai Skyline Tour',
+    duration_minutes: 90,
+    price_aed: 600,
+    description: 'Comprehensive tour including Atlantis and both Burjs with breathtaking skyline views',
+    max_participants: 2,
+    is_active: true,
+    display_order: 3,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'ultimate-120',
+    name: '120 Minutes - Complete Experience',
+    duration_minutes: 120,
+    price_aed: 750,
+    description: 'Ultimate Dubai experience including Ain Dubai and all major landmarks',
+    max_participants: 2,
+    is_active: true,
+    display_order: 4,
+    created_at: new Date().toISOString()
+  }
+];
+
 export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
   }, []);
 
   async function fetchPackages() {
-    const { data, error } = await supabase
-      .from('packages')
-      .select('*')
-      .eq('is_active', true)
-      .order('display_order');
+    try {
+      setError('');
+      const { data, error: supabaseError } = await supabase
+        .from('packages')
+        .select('*')
+        .eq('is_active', true)
+        .order('display_order');
 
-    if (!error && data) {
-      setPackages(data);
+      if (supabaseError) {
+        console.error('Supabase error:', supabaseError);
+        // Use fallback packages if Supabase fails
+        setPackages(fallbackPackages);
+        setUsingFallback(true);
+        setError('Using default packages. Database connection unavailable.');
+      } else if (data && data.length > 0) {
+        setPackages(data);
+        setUsingFallback(false);
+      } else {
+        // No packages in database, use fallback
+        setPackages(fallbackPackages);
+        setUsingFallback(true);
+        setError('No packages found. Using default packages.');
+      }
+    } catch (err) {
+      console.error('Error fetching packages:', err);
+      // Use fallback packages on any error
+      setPackages(fallbackPackages);
+      setUsingFallback(true);
+      setError('Unable to load packages from database. Using default packages.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const packageImages = [
@@ -56,6 +128,23 @@ export default function PackageSelection({ onSelect }: Props) {
       <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
         Select Your Package
       </h2>
+
+      {error && (
+        <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+          <div className="flex items-center">
+            <AlertCircle className="text-yellow-400 mr-3" size={20} />
+            <p className="text-sm text-yellow-700">{error}</p>
+          </div>
+        </div>
+      )}
+
+      {packages.length === 0 && !loading && (
+        <div className="text-center py-12">
+          <AlertCircle className="mx-auto text-gray-400 mb-4" size={48} />
+          <p className="text-gray-600">No packages available at the moment.</p>
+          <p className="text-sm text-gray-500 mt-2">Please try again later or contact us directly.</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {packages.map((pkg, index) => (
