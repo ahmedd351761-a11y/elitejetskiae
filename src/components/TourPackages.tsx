@@ -14,7 +14,7 @@ const featuredPackages = [
     highlight: 'Fast-track ride with an iconic Burj Al Arab photo stop.',
     image: '/burj.jpg',
     checkoutUrl:
-      'https://wa.me/971552851012?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2030%20min%20Burj%20Al%20Arab%20tour%20for%20250%20AED.'
+      'https://wa.me/971526977676?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2030%20min%20Burj%20Al%20Arab%20tour%20for%20250%20AED.'
   },
   {
     id: 'atlantis-60',
@@ -25,7 +25,7 @@ const featuredPackages = [
     highlight: 'Ride the Palm crescent and frame Atlantis in your shots.',
     image: '/atlantis.jpg',
     checkoutUrl:
-      'https://wa.me/971552851012?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2060%20min%20Atlantis%20tour%20for%20450%20AED.'
+      'https://wa.me/971526977676?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2060%20min%20Atlantis%20tour%20for%20450%20AED.'
   },
   {
     id: 'skyline-90',
@@ -36,7 +36,7 @@ const featuredPackages = [
     highlight: 'Cover Atlantis, both Burjs, and the skyline in one loop.',
     image: '/skyline.jpg',
     checkoutUrl:
-      'https://wa.me/971552851012?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2090%20min%20Dubai%20Skyline%20tour%20for%20600%20AED.'
+      'https://wa.me/971526977676?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%2090%20min%20Dubai%20Skyline%20tour%20for%20600%20AED.'
   },
   {
     id: 'ultimate-120',
@@ -47,7 +47,7 @@ const featuredPackages = [
     highlight: 'Full Dubai coastline sweep including Bluewaters & Ain Dubai.',
     image: '/loop.jpg',
     checkoutUrl:
-      'https://wa.me/971552851012?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%20120%20min%20Ultimate%20tour%20for%20750%20AED.'
+      'https://wa.me/971526977676?text=Hi%20EliteJetskis%20AE!%20I%27d%20like%20to%20book%20the%20120%20min%20Ultimate%20tour%20for%20750%20AED.'
   }
 ];
 

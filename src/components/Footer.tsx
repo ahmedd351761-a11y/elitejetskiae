@@ -91,7 +91,7 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href="https://wa.me/971552851012" 
+                  href="https://wa.me/971526977676" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-[#E31E24] transition-colors"
@@ -148,7 +148,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/971552851012"
+                href="https://wa.me/971526977676"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white/10 hover:bg-[#25D366] p-3 rounded-full transition-all hover:scale-110"

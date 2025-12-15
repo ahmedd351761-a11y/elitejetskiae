@@ -250,7 +250,7 @@ _Booking created: ${new Date().toLocaleString()}_`;
                     📍 Get Directions
                   </a>
                   <a
-                    href="https://wa.me/971552851012"
+                    href="https://wa.me/971526977676"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-semibold text-sm transition-all hover:scale-105"
