@@ -16,24 +16,31 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0A1128]/70 via-[#0A1128]/50 to-transparent backdrop-blur-md border-b border-white/5">
-      <nav className="container mx-auto px-4 py-4">
+    <header 
+      className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0A1128]/70 via-[#0A1128]/50 to-transparent backdrop-blur-md border-b border-white/5"
+      role="banner"
+    >
+      <nav className="container mx-auto px-4 py-4" aria-label="Main navigation">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button
-              onClick={onHomeClick}
+            <a
+              href="/"
+              onClick={(e) => { e.preventDefault(); onHomeClick?.(); }}
               className="flex items-center gap-4 hover:opacity-80 transition-opacity"
+              aria-label="Elite Jetskis AE - Home"
             >
               <img
                 src="/logo.jpg"
-                alt="Elite Jetskis AE"
+                alt="Elite Jetskis AE - Dubai's Premier Jet Ski Rental"
                 className="h-14 w-auto drop-shadow-lg"
+                width="56"
+                height="56"
               />
               <div className="hidden sm:block leading-tight uppercase text-white font-black tracking-tight">
                 <span className="text-[11px] tracking-[0.25em] text-white/70">Book your</span>
                 <span className="text-lg block">Elite Jetskis AE</span>
               </div>
-            </button>
+            </a>
           </div>
 
           <div className="hidden md:flex items-center gap-4 text-white">

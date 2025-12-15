@@ -53,31 +53,52 @@ const featuredPackages = [
 
 export default function TourPackages({ onBookClick }: TourPackagesProps = {}) {
   return (
-    <section className="py-20 bg-gray-50">
+    <section 
+      className="py-20 bg-gray-50" 
+      id="packages"
+      aria-labelledby="packages-heading"
+      itemScope 
+      itemType="https://schema.org/ItemList"
+    >
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-[#0A1128] mb-4">
-            OUR TOUR PACKAGES
+          <h2 
+            id="packages-heading"
+            className="text-4xl md:text-5xl font-black text-[#0A1128] mb-4"
+          >
+            Jet Ski Tour Packages Dubai
           </h2>
           <p className="text-lg text-gray-600">
-            Four signature rides. Dubai's icons. Tap to go straight to checkout.
+            Four signature rides. Dubai's icons. Book online for instant confirmation.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredPackages.map((pkg) => (
-            <a
+          {featuredPackages.map((pkg, index) => (
+            <article
               key={pkg.id}
-              href={pkg.checkoutUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              itemScope
+              itemType="https://schema.org/Product"
+              itemProp="itemListElement"
               className="group relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 min-h-[26rem] bg-[#0A1128]"
             >
+              <meta itemProp="position" content={String(index + 1)} />
+              <a
+                href={pkg.checkoutUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 z-10"
+                aria-label={`Book ${pkg.title} - ${pkg.durationMinutes} minutes for ${pkg.priceAed} AED`}
+                itemProp="url"
+              />
               <img
                 src={pkg.image}
-                alt={pkg.title}
+                alt={`${pkg.title} - Jet ski tour to ${pkg.location} Dubai`}
                 className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
+                itemProp="image"
+                width="400"
+                height="500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-[#0A1128]/70 to-transparent group-hover:from-black/85 group-hover:via-[#0A1128]/80 transition-colors" />
 
@@ -96,29 +117,35 @@ export default function TourPackages({ onBookClick }: TourPackagesProps = {}) {
               </div>
 
               <div className="absolute inset-x-4 bottom-5 text-white space-y-2">
-                <p className="text-2xl font-black leading-tight drop-shadow-sm">
+                <h3 className="text-2xl font-black leading-tight drop-shadow-sm" itemProp="name">
                   {pkg.title}
-                </p>
-                <p className="text-sm text-white/85">{pkg.highlight}</p>
+                </h3>
+                <p className="text-sm text-white/85" itemProp="description">{pkg.highlight}</p>
+                <div itemProp="offers" itemScope itemType="https://schema.org/Offer" className="hidden">
+                  <meta itemProp="priceCurrency" content="AED" />
+                  <meta itemProp="price" content={String(pkg.priceAed)} />
+                  <link itemProp="availability" href="https://schema.org/InStock" />
+                </div>
                 <div className="flex items-center flex-wrap gap-3 pt-3">
                   <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur px-4 py-2 rounded-full text-sm font-semibold">
                     Checkout / Pay
-                    <ArrowRight size={16} />
+                    <ArrowRight size={16} aria-hidden="true" />
                   </span>
                   {onBookClick && (
                     <button
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         onBookClick();
                       }}
-                      className="text-[#0A1128] bg-white hover:bg-gray-100 font-semibold px-4 py-2 rounded-full shadow-md transition-all hover:-translate-y-0.5"
+                      className="relative z-20 text-[#0A1128] bg-white hover:bg-gray-100 font-semibold px-4 py-2 rounded-full shadow-md transition-all hover:-translate-y-0.5"
                     >
                       Book in-app
                     </button>
                   )}
                 </div>
               </div>
-            </a>
+            </article>
           ))}
         </div>
       </div>
