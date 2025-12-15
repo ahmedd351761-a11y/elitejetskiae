@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Calendar, Clock, ArrowLeft } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Calendar, Clock, ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { Package, TimeSlot } from '@/types';
-import { generateTimeSlots, formatDate, getAvailabilityColor, getAvailabilityText } from '@/utils/bookingUtils';
+import { Package } from '@/types';
+import { generateTimeSlots, formatDate } from '@/utils/bookingUtils';
 
 interface Props {
   package: Package;
@@ -13,8 +13,9 @@ interface Props {
 export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Props) {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
-  const [availableSlots, setAvailableSlots] = useState<Map<string, number>>(new Map());
+  const [bookedSlots, setBookedSlots] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const today = new Date();
   const availableDates = Array.from({ length: 60 }, (_, i) => {
@@ -25,44 +26,116 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
 
   const timeSlots = generateTimeSlots();
 
-  useEffect(() => {
-    if (selectedDate) {
-      fetchAvailability(selectedDate);
-    }
-  }, [selectedDate]);
-
-  async function fetchAvailability(date: string) {
+  // Fetch booked slots whenever date or package changes
+  const fetchBookedSlots = useCallback(async (date: string, packageId: string) => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('time_slots')
-      .select('*')
-      .eq('slot_date', date);
+    setError('');
+    
+    try {
+      // Query bookings table directly for accurate availability
+      // Only consider non-cancelled bookings
+      const { data, error: fetchError } = await supabase
+        .from('bookings')
+        .select('booking_time')
+        .eq('package_id', packageId)
+        .eq('booking_date', date)
+        .neq('status', 'cancelled');
 
-    if (!error && data) {
-      const slotsMap = new Map<string, number>();
-      data.forEach((slot: TimeSlot) => {
-        slotsMap.set(slot.slot_time, slot.available_capacity);
-      });
-      setAvailableSlots(slotsMap);
-    } else {
-      setAvailableSlots(new Map());
+      if (fetchError) {
+        console.error('Error fetching availability:', fetchError);
+        setError('Failed to load availability. Please try again.');
+        setBookedSlots(new Set());
+        return;
+      }
+
+      // Create a set of booked times for O(1) lookup
+      const booked = new Set<string>();
+      if (data) {
+        data.forEach((booking) => {
+          // Normalize time format (remove seconds if present)
+          const time = booking.booking_time.substring(0, 5);
+          booked.add(time);
+        });
+      }
+      
+      setBookedSlots(booked);
+      console.log(`Loaded availability for ${date}: ${booked.size} slots booked`);
+    } catch (err) {
+      console.error('Error fetching booked slots:', err);
+      setError('Unable to check availability. Please try again.');
+      setBookedSlots(new Set());
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }
+  }, []);
 
-  const getSlotAvailability = (time: string): number => {
-    return availableSlots.get(time) ?? 4;
+  // Fetch availability when date changes
+  useEffect(() => {
+    if (selectedDate && pkg.id) {
+      // Reset selected time when date changes
+      setSelectedTime('');
+      fetchBookedSlots(selectedDate, pkg.id);
+    }
+  }, [selectedDate, pkg.id, fetchBookedSlots]);
+
+  const isTimeBooked = (time: string): boolean => {
+    return bookedSlots.has(time);
   };
 
   const isTimeInPast = (date: string, time: string): boolean => {
     const now = new Date();
-    const slotDateTime = new Date(`${date}T${time}`);
-    return slotDateTime < now;
+    const [hours, minutes] = time.split(':').map(Number);
+    const slotDateTime = new Date(date);
+    slotDateTime.setHours(hours, minutes, 0, 0);
+    return slotDateTime <= now;
+  };
+
+  const getSlotStatus = (time: string): 'available' | 'booked' | 'past' => {
+    if (isTimeInPast(selectedDate, time)) return 'past';
+    if (isTimeBooked(time)) return 'booked';
+    return 'available';
+  };
+
+  const getSlotLabel = (status: 'available' | 'booked' | 'past'): string => {
+    switch (status) {
+      case 'past': return 'Past';
+      case 'booked': return 'Booked';
+      case 'available': return 'Available';
+    }
+  };
+
+  const getSlotColor = (status: 'available' | 'booked' | 'past', isSelected: boolean): string => {
+    if (isSelected) return 'text-white';
+    switch (status) {
+      case 'past': return 'text-gray-400';
+      case 'booked': return 'text-red-500';
+      case 'available': return 'text-green-600';
+    }
+  };
+
+  const handleTimeSelect = (time: string) => {
+    const status = getSlotStatus(time);
+    if (status === 'available') {
+      setSelectedTime(time);
+    }
   };
 
   const handleContinue = () => {
     if (selectedDate && selectedTime) {
+      // Final check before proceeding
+      const status = getSlotStatus(selectedTime);
+      if (status !== 'available') {
+        setError('This time slot is no longer available. Please select another time.');
+        setSelectedTime('');
+        return;
+      }
       onSelect(selectedDate, selectedTime);
+    }
+  };
+
+  const handleRetry = () => {
+    if (selectedDate && pkg.id) {
+      fetchBookedSlots(selectedDate, pkg.id);
     }
   };
 
@@ -85,6 +158,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Date Selection */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Calendar className="text-[#E31E24]" size={24} />
@@ -115,6 +189,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
             </div>
           </div>
 
+          {/* Time Selection */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Clock className="text-[#E31E24]" size={24} />
@@ -128,39 +203,70 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
             ) : loading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E31E24] mx-auto" />
+                <p className="text-gray-500 mt-4">Checking availability...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-8">
+                <AlertCircle className="mx-auto text-red-500 mb-3" size={32} />
+                <p className="text-red-600 mb-4">{error}</p>
+                <button
+                  onClick={handleRetry}
+                  className="inline-flex items-center space-x-2 bg-[#E31E24] hover:bg-[#c41a20] text-white px-4 py-2 rounded-full font-semibold transition-all"
+                >
+                  <RefreshCw size={16} />
+                  <span>Retry</span>
+                </button>
               </div>
             ) : (
-              <div className="max-h-96 overflow-y-auto border rounded-lg">
-                {timeSlots.map((time) => {
-                  const availability = getSlotAvailability(time);
-                  const isPast = isTimeInPast(selectedDate, time);
-                  const isDisabled = availability === 0 || isPast;
+              <>
+                {/* Legend */}
+                <div className="flex items-center justify-center gap-4 mb-4 text-xs">
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <span className="text-gray-600">Available</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-red-500" />
+                    <span className="text-gray-600">Booked</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-gray-400" />
+                    <span className="text-gray-600">Past</span>
+                  </div>
+                </div>
 
-                  return (
-                    <button
-                      key={time}
-                      onClick={() => !isDisabled && setSelectedTime(time)}
-                      disabled={isDisabled}
-                      className={`w-full text-left px-4 py-3 border-b transition-colors ${
-                        isDisabled
-                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                          : selectedTime === time
-                          ? 'bg-[#E31E24] text-white hover:bg-[#E31E24]'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold">{time}</span>
-                        <span className={`text-sm ${
-                          selectedTime === time ? 'text-white' : getAvailabilityColor(availability)
-                        }`}>
-                          {isPast ? 'Past' : getAvailabilityText(availability)}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                <div className="max-h-80 overflow-y-auto border rounded-lg">
+                  {timeSlots.map((time) => {
+                    const status = getSlotStatus(time);
+                    const isDisabled = status !== 'available';
+                    const isSelected = selectedTime === time;
+
+                    return (
+                      <button
+                        key={time}
+                        onClick={() => handleTimeSelect(time)}
+                        disabled={isDisabled}
+                        className={`w-full text-left px-4 py-3 border-b transition-colors ${
+                          isDisabled
+                            ? 'bg-gray-50 cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-[#E31E24] text-white'
+                            : 'hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className={`font-semibold ${isDisabled && !isSelected ? 'text-gray-400' : ''}`}>
+                            {time}
+                          </span>
+                          <span className={`text-sm font-medium ${getSlotColor(status, isSelected)}`}>
+                            {getSlotLabel(status)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         </div>
