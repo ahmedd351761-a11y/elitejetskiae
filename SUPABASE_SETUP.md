@@ -60,6 +60,17 @@ This will create:
    - Value: Your anon public key from Step 4
    - Scope: All scopes
 
+   **Variable 3 (server-side bookings):**
+    - Key: `SUPABASE_URL` (can reuse the same Project URL)
+    - Value: Your Project URL from Step 4
+    - Scope: All scopes
+
+   **Variable 4 (server-side bookings):**
+    - Key: `SUPABASE_SERVICE_ROLE_KEY`
+    - Value: Your Supabase service role key (from Settings → API)
+    - Scope: All scopes
+    - **Never expose this key in client code.** It is only used by the Netlify Function.
+
 4. Click "Save"
 
 ## Step 6: Redeploy Your Site

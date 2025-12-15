@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, User, Mail, Phone, Users, AlertCircle } from 'lucide-react';
-import { BookingFormData } from '../../types';
-import { validateEmail, validatePhone } from '../../utils/bookingUtils';
+import { BookingFormData } from '@/types';
+import { validateEmail, validatePhone } from '@/utils/bookingUtils';
 
 interface Props {
   onSubmit: (data: Partial<BookingFormData>) => void;

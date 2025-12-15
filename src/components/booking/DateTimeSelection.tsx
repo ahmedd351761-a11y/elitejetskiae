@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Clock, ArrowLeft } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
-import { Package, TimeSlot } from '../../types';
-import { generateTimeSlots, formatDate, getAvailabilityColor, getAvailabilityText } from '../../utils/bookingUtils';
+import { supabase } from '@/lib/supabase';
+import { Package, TimeSlot } from '@/types';
+import { generateTimeSlots, formatDate, getAvailabilityColor, getAvailabilityText } from '@/utils/bookingUtils';
 
 interface Props {
   package: Package;

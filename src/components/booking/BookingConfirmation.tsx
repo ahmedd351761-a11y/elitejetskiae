@@ -1,6 +1,6 @@
 import { CheckCircle, Calendar, Download, MapPin, Mail, Send, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { BookingFormData } from '../../types';
+import { BookingFormData } from '@/types';
 
 interface Props {
   bookingReference: string;

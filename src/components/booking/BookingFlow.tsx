@@ -4,7 +4,7 @@ import DateTimeSelection from './DateTimeSelection';
 import CustomerForm from './CustomerForm';
 import BookingSummary from './BookingSummary';
 import BookingConfirmation from './BookingConfirmation';
-import { Package, BookingFormData } from '../../types';
+import { Package, BookingFormData } from '@/types';
 
 type BookingStep = 'package' | 'datetime' | 'customer' | 'summary' | 'confirmation';
 

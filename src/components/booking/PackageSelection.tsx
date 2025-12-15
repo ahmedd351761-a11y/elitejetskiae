@@ -1,84 +1,27 @@
 import { useEffect, useState } from 'react';
-import { Clock, Users, CheckCircle, AlertCircle } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
-import { Package } from '../../types';
-import { formatPrice } from '../../utils/bookingUtils';
+import { Clock, Users, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { Package } from '@/types';
+import { formatPrice } from '@/utils/bookingUtils';
 
 interface Props {
   onSelect: (pkg: Package) => void;
 }
 
-// Fallback packages in case Supabase is unavailable
-const fallbackPackages: Package[] = [
-  {
-    id: 'burj-30',
-    name: '30 Minutes - Burj Al Arab Tour',
-    duration_minutes: 30,
-    price_aed: 250,
-    description: 'Experience the thrill of jet skiing with stunning views of the iconic Burj Al Arab',
-    max_participants: 2,
-    is_active: true,
-    display_order: 1,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'atlantis-60',
-    name: '60 Minutes - Atlantis Tour',
-    duration_minutes: 60,
-    price_aed: 450,
-    description: 'Extended tour featuring Atlantis The Palm and surrounding areas',
-    max_participants: 2,
-    is_active: true,
-    display_order: 2,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'skyline-90',
-    name: '90 Minutes - Dubai Skyline Tour',
-    duration_minutes: 90,
-    price_aed: 600,
-    description: 'Comprehensive tour including Atlantis and both Burjs with breathtaking skyline views',
-    max_participants: 2,
-    is_active: true,
-    display_order: 3,
-    created_at: new Date().toISOString()
-  },
-  {
-    id: 'ultimate-120',
-    name: '120 Minutes - Complete Experience',
-    duration_minutes: 120,
-    price_aed: 750,
-    description: 'Ultimate Dubai experience including Ain Dubai and all major landmarks',
-    max_participants: 2,
-    is_active: true,
-    display_order: 4,
-    created_at: new Date().toISOString()
-  }
-];
-
 export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
-  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
   }, []);
 
   async function fetchPackages() {
+    setLoading(true);
+    setError('');
+    
     try {
-      setError('');
-      
-      // Check if Supabase is configured first - prevents fetch errors
-      if (!isSupabaseConfigured) {
-        console.warn('Supabase not configured - using fallback packages');
-        setPackages(fallbackPackages);
-        setError('Database not configured. Using default packages.');
-        setLoading(false);
-        return;
-      }
-
       const { data, error: supabaseError } = await supabase
         .from('packages')
         .select('*')
@@ -87,23 +30,23 @@ export default function PackageSelection({ onSelect }: Props) {
 
       if (supabaseError) {
         console.error('Supabase error:', supabaseError);
-        // Use fallback packages if Supabase fails
-        setPackages(fallbackPackages);
-        setError(`Database connection error: ${supabaseError.message}. Using default packages.`);
-      } else if (data && data.length > 0) {
-        setPackages(data);
-        setError(''); // Clear any previous errors
-      } else {
-        // No packages in database, use fallback
-        setPackages(fallbackPackages);
-        setError('No packages found in database. Using default packages.');
+        setError(`Failed to load packages: ${supabaseError.message}`);
+        setPackages([]);
+        return;
       }
+
+      if (!data || data.length === 0) {
+        setError('No packages are currently available. Please contact us directly.');
+        setPackages([]);
+        return;
+      }
+
+      setPackages(data);
     } catch (err) {
       console.error('Error fetching packages:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      // Use fallback packages on any error
-      setPackages(fallbackPackages);
-      setError(`Unable to load packages: ${errorMessage}. Using default packages.`);
+      setError(`Unable to load packages: ${errorMessage}. Please try again or contact us.`);
+      setPackages([]);
     } finally {
       setLoading(false);
     }
@@ -119,11 +62,9 @@ export default function PackageSelection({ onSelect }: Props) {
 
   // Helper function to get image for a package
   const getPackageImage = (pkg: Package, index: number): string => {
-    // First priority: use image_url from database if available
     if (pkg.image_url) {
       return pkg.image_url;
     }
-    // Fallback: cycle through default images using modulo
     return defaultPackageImages[index % defaultPackageImages.length];
   };
 
@@ -142,28 +83,35 @@ export default function PackageSelection({ onSelect }: Props) {
     );
   }
 
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
+          Select Your Package
+        </h2>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
+          <AlertCircle className="mx-auto text-red-500 mb-4" size={48} />
+          <p className="text-red-700 mb-4">{error}</p>
+          <button
+            onClick={fetchPackages}
+            className="inline-flex items-center space-x-2 bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold transition-all"
+          >
+            <RefreshCw size={18} />
+            <span>Try Again</span>
+          </button>
+          <p className="text-sm text-gray-500 mt-4">
+            Or contact us via WhatsApp: <a href="https://wa.me/971501234567" className="text-[#E31E24] hover:underline">+971 50 123 4567</a>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
         Select Your Package
       </h2>
-
-      {error && (
-        <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
-          <div className="flex items-center">
-            <AlertCircle className="text-yellow-400 mr-3" size={20} />
-            <p className="text-sm text-yellow-700">{error}</p>
-          </div>
-        </div>
-      )}
-
-      {packages.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <AlertCircle className="mx-auto text-gray-400 mb-4" size={48} />
-          <p className="text-gray-600">No packages available at the moment.</p>
-          <p className="text-sm text-gray-500 mt-2">Please try again later or contact us directly.</p>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {packages.map((pkg, index) => (
@@ -178,10 +126,10 @@ export default function PackageSelection({ onSelect }: Props) {
                 alt={pkg.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 onError={(e) => {
-                  // Fallback to first default image if image fails to load
                   const target = e.target as HTMLImageElement;
-                  if (target.src !== defaultPackageImages[0]) {
-                    target.src = defaultPackageImages[0];
+                  const fallbackSrc = defaultPackageImages[0];
+                  if (target.src !== window.location.origin + fallbackSrc) {
+                    target.src = fallbackSrc;
                   }
                 }}
               />

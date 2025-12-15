@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Calendar, Clock, User, Mail, Phone, Users, MessageCircle, Loader2 } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import { Package, BookingFormData } from '../../types';
-import { formatPrice } from '../../utils/bookingUtils';
+import { Package, BookingFormData } from '@/types';
+import { formatPrice } from '@/utils/bookingUtils';
 
 interface Props {
   package: Package;
@@ -18,95 +17,50 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
 
   const totalPrice = pkg.price_aed;
 
-  // Generate a booking reference locally if Supabase is not available
-  const generateBookingReference = (): string => {
-    const date = new Date();
-    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
-    const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `EJAE-${dateStr}-${randomNum}`;
-  };
-
   const handleConfirmBooking = async () => {
     setLoading(true);
     setError('');
 
     try {
-      // Check if Supabase is configured
-      if (!isSupabaseConfigured) {
-        console.warn('Supabase not configured - generating local booking reference');
-        // Generate a local booking reference and proceed
-        const localReference = generateBookingReference();
-        onConfirm(localReference);
-        setLoading(false);
-        return;
+      const response = await fetch('/.netlify/functions/createBooking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          packageId: pkg.id,
+          bookingDate: bookingData.date,
+          bookingTime: bookingData.time,
+          customerName: bookingData.customerName,
+          customerEmail: bookingData.customerEmail,
+          customerPhone: bookingData.customerPhone,
+          numParticipants: bookingData.numParticipants,
+          emergencyContact: bookingData.emergencyContact,
+          specialRequirements: bookingData.specialRequirements,
+          totalPrice,
+          promoCode
+        })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message =
+          typeof result.error === 'string'
+            ? result.error
+            : result.error?.message || `Booking failed with status ${response.status}`;
+        throw new Error(message);
       }
 
-      // Log the data being sent for debugging
-      const bookingPayload = {
-        package_id: pkg.id,
-        booking_date: bookingData.date,
-        booking_time: bookingData.time,
-        customer_name: bookingData.customerName,
-        customer_email: bookingData.customerEmail,
-        customer_phone: bookingData.customerPhone,
-        num_participants: bookingData.numParticipants,
-        emergency_contact: bookingData.emergencyContact || null,
-        special_requirements: bookingData.specialRequirements || null,
-        total_price: totalPrice,
-        promo_code: promoCode || null,
-        payment_method: 'cash',
-        status: 'confirmed'
-      };
-      
-      console.log('Attempting to save booking:', bookingPayload);
-      console.log('Supabase configured:', isSupabaseConfigured);
-
-      const { data, error: bookingError } = await supabase
-        .from('bookings')
-        .insert(bookingPayload)
-        .select()
-        .single();
-
-      if (bookingError) {
-        console.error('Supabase booking error details:', {
-          message: bookingError.message,
-          details: bookingError.details,
-          hint: bookingError.hint,
-          code: bookingError.code
-        });
-        // Show the actual error to help debug
-        setError(`Failed to save booking: ${bookingError.message}${bookingError.hint ? ' (' + bookingError.hint + ')' : ''}. Please check the browser console for details.`);
-        setLoading(false);
-        return;
+      if (!result.booking_reference) {
+        throw new Error('Booking created but reference was not returned. Please contact support.');
       }
 
-      if (data && data.booking_reference) {
-        console.log('Booking saved successfully:', data);
-        onConfirm(data.booking_reference);
-      } else {
-        // This shouldn't happen, but handle it gracefully
-        console.error('Booking created but no reference returned:', data);
-        setError('Booking created but reference not generated. Please contact support.');
-        setLoading(false);
-      }
+      onConfirm(result.booking_reference);
     } catch (err) {
       console.error('Booking error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      
-      // Only use fallback for network errors, not database constraint errors
-      if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('Failed to fetch')) {
-        const fallbackReference = generateBookingReference();
-        console.warn('Network error - using fallback booking reference:', fallbackReference);
-        setError('Database connection unavailable. Booking reference generated locally. You can still proceed with WhatsApp booking.');
-        // Still proceed with the booking using local reference
-        setTimeout(() => {
-          onConfirm(fallbackReference);
-        }, 2000);
-      } else {
-        // For other errors (like constraint violations), show error and don't proceed
-        setError(`Error: ${errorMessage}. Please check your information and try again.`);
-        setLoading(false);
-      }
+      setError(`Error: ${errorMessage}. Please check your information and try again.`);
     }
   };
 
