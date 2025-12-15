@@ -100,7 +100,7 @@ export default function PackageSelection({ onSelect }: Props) {
             <span>Try Again</span>
           </button>
           <p className="text-sm text-gray-500 mt-4">
-            Or contact us via WhatsApp: <a href="https://wa.me/971501234567" className="text-[#E31E24] hover:underline">+971 50 123 4567</a>
+            Or contact us via WhatsApp: <a href="https://wa.me/971526977676" className="text-[#E31E24] hover:underline">+971 52 697 7676</a>
           </p>
         </div>
       </div>
