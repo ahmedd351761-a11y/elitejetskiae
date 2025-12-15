@@ -10,7 +10,7 @@ This guide will help you set up your Supabase database so bookings can be saved.
 4. Fill in:
    - **Name**: Elite Jetskis AE (or your preferred name)
    - **Database Password**: Create a strong password (save this!)
-   - **Region**: Choose closest to your users
+   - **Region**: Choose closest to your users (e.g., Middle East or Europe)
 5. Click "Create new project" (takes 1-2 minutes)
 
 ## Step 2: Run Database Migration
@@ -23,11 +23,10 @@ This guide will help you set up your Supabase database so bookings can be saved.
 6. You should see "Success. No rows returned"
 
 This will create:
-- `packages` table
+- `packages` table (with 4 initial packages)
 - `bookings` table  
 - `time_slots` table
 - All necessary functions, triggers, and RLS policies
-- Initial package data (4 packages)
 
 ## Step 3: Verify Tables Were Created
 
@@ -40,38 +39,27 @@ This will create:
 ## Step 4: Get API Credentials
 
 1. Go to **Settings** → **API** (left sidebar)
-2. You'll need two values:
+2. You'll need THREE values:
    - **Project URL** (looks like: `https://xxxxx.supabase.co`)
    - **anon public** key (long string starting with `eyJ...`)
+   - **service_role** key (⚠️ Keep this secret! Used only server-side)
 
 ## Step 5: Set Environment Variables in Netlify
 
 1. Go to your Netlify dashboard
 2. Select your site → **Site settings** → **Environment variables**
-3. Click "Add variable" and add:
+3. Add the following 4 variables:
 
-   **Variable 1:**
-   - Key: `VITE_SUPABASE_URL`
-   - Value: Your Project URL from Step 4
-   - Scope: All scopes
-
-   **Variable 2:**
-   - Key: `VITE_SUPABASE_ANON_KEY`
-   - Value: Your anon public key from Step 4
-   - Scope: All scopes
-
-   **Variable 3 (server-side bookings):**
-    - Key: `SUPABASE_URL` (can reuse the same Project URL)
-    - Value: Your Project URL from Step 4
-    - Scope: All scopes
-
-   **Variable 4 (server-side bookings):**
-    - Key: `SUPABASE_SERVICE_ROLE_KEY`
-    - Value: Your Supabase service role key (from Settings → API)
-    - Scope: All scopes
-    - **Never expose this key in client code.** It is only used by the Netlify Function.
+| Key | Value | Description |
+|-----|-------|-------------|
+| `VITE_SUPABASE_URL` | Your Project URL | Used by frontend to load packages |
+| `VITE_SUPABASE_ANON_KEY` | Your anon public key | Used by frontend (safe to expose) |
+| `SUPABASE_URL` | Your Project URL (same as above) | Used by Netlify Function |
+| `SUPABASE_SERVICE_ROLE_KEY` | Your service_role key | ⚠️ **SECRET** - Only for server-side |
 
 4. Click "Save"
+
+> ⚠️ **Important**: The `SUPABASE_SERVICE_ROLE_KEY` bypasses Row Level Security. Never expose it in client-side code. It's only used by the Netlify Function to create bookings securely.
 
 ## Step 6: Redeploy Your Site
 
@@ -83,66 +71,91 @@ This will create:
 
 1. Visit your live site
 2. Click "Book Now"
-3. Complete a test booking
-4. Go back to Supabase → **Table Editor** → `bookings` table
-5. You should see your test booking!
+3. Select a package, date, time, and fill in customer details
+4. Complete the booking
+5. Go to Supabase → **Table Editor** → `bookings` table
+6. You should see your test booking!
+
+---
 
 ## Troubleshooting
 
-### Bookings still not saving?
+### Packages not loading?
 
-1. **Check browser console** (F12 → Console tab):
-   - Look for any error messages
-   - Check if Supabase connection errors appear
+1. **Check browser console** (F12 → Console tab)
+2. Look for errors like:
+   - `Failed to load packages: ...` - Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+   - `relation "packages" does not exist` - Run the SQL migration (Step 2)
 
-2. **Verify environment variables in Netlify**:
-   - Go to Site settings → Environment variables
-   - Make sure both variables are set correctly
-   - No typos or extra spaces
+3. **Verify packages exist in Supabase**:
+   - Go to Table Editor → `packages`
+   - Should have 4 rows with `is_active = true`
 
-3. **Check Supabase logs**:
+### Bookings not saving?
+
+1. **Check the error message on screen** - We now show real errors instead of silent failures
+
+2. **Check Netlify Function logs**:
+   - Go to Netlify → Functions → `createBooking`
+   - Look for error messages
+
+3. **Verify all 4 environment variables are set**:
+   ```
+   VITE_SUPABASE_URL
+   VITE_SUPABASE_ANON_KEY
+   SUPABASE_URL
+   SUPABASE_SERVICE_ROLE_KEY
+   ```
+
+4. **Check Supabase logs**:
    - Go to Supabase → **Logs** → **Postgres Logs**
-   - Look for any errors when trying to insert
+   - Look for constraint violations or policy errors
 
-4. **Verify RLS policies**:
-   - Go to Supabase → **Authentication** → **Policies**
-   - Check that `bookings` table has "Anyone can create bookings" policy
+### Common Error Messages
 
-5. **Check package IDs**:
-   - Go to Supabase → **Table Editor** → `packages`
-   - Make sure packages exist and have valid UUIDs
-   - The `package_id` in bookings must match a package `id`
+| Error | Solution |
+|-------|----------|
+| `Supabase environment variables are not set` | Add all 4 env vars to Netlify |
+| `foreign key violation` | The package_id doesn't exist. Make sure packages are in the database |
+| `This time slot is already booked` | Duplicate booking prevention working correctly |
+| `Failed to load packages` | Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY |
 
-### Common Issues
+---
 
-**Error: "new row violates row-level security policy"**
-- Solution: Make sure the RLS policy "Anyone can create bookings" exists
+## Architecture Overview
 
-**Error: "foreign key violation"**
-- Solution: The `package_id` doesn't exist. Make sure packages are inserted.
+### Frontend (Client-Side)
+- Uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+- Only reads data (packages, time slots)
+- Cannot insert bookings directly (for security)
 
-**Error: "Failed to fetch"**
-- Solution: Check your Supabase URL and anon key are correct in Netlify
+### Backend (Netlify Function)
+- Uses `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+- Handles booking creation securely
+- Validates data and prevents duplicates
+- Located at: `netlify/functions/createBooking.ts`
 
-## Database Schema Overview
+### Database Tables
 
-### Packages Table
+**packages**
 - Stores tour packages (30min, 60min, 90min, 120min)
-- Auto-populated by migration
+- Read by frontend to display options
 
-### Bookings Table
+**bookings**
 - Stores all customer bookings
 - Auto-generates booking reference (EJAE-YYYYMMDD-XXXX)
-- Links to packages via `package_id`
+- Created via Netlify Function only
 
-### Time Slots Table
+**time_slots**
 - Tracks availability for each date/time
 - Auto-updated when bookings are created/cancelled
+
+---
 
 ## Next Steps
 
 Once bookings are saving:
-1. Set up email notifications (optional)
-2. Create admin dashboard to view bookings
+1. Set up email notifications (Supabase Edge Functions or external service)
+2. Create admin dashboard to view/manage bookings
 3. Set up automated reports
-
+4. Configure custom domain with HTTPS
