@@ -79,7 +79,7 @@ export default function Hero({ onBookNowClick }: HeroProps = {}) {
       </div>
 
       <a 
-        href="https://wa.me/971501234567?text=Hi%20Elite%20Jetskis!%20I%20want%20to%20book%20a%20jet%20ski%20tour."
+        href="https://wa.me/971526977676?text=Hi%20Elite%20Jetskis!%20I%20want%20to%20book%20a%20jet%20ski%20tour."
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 bg-[#25D366] hover:bg-[#128C7E] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 z-40"
