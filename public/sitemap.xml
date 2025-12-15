@@ -1,45 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
   <!-- Homepage -->
   <url>
-    <loc>https://elitejetskiae.com/</loc>
-    <lastmod>2024-12-15</lastmod>
+    <loc>https://www.elitejetskisae.com/</loc>
+    <lastmod>2025-12-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+
     <image:image>
-      <image:loc>https://elitejetskiae.com/burj.jpg</image:loc>
+      <image:loc>https://www.elitejetskisae.com/burj.jpg</image:loc>
       <image:title>Jet Ski Tour Dubai - Burj Al Arab View</image:title>
       <image:caption>Experience thrilling jet ski tours with stunning views of Burj Al Arab in Dubai</image:caption>
     </image:image>
+
     <image:image>
-      <image:loc>https://elitejetskiae.com/atlantis.jpg</image:loc>
+      <image:loc>https://www.elitejetskisae.com/atlantis.jpg</image:loc>
       <image:title>Atlantis The Palm Jet Ski Tour</image:title>
       <image:caption>Jet ski past the iconic Atlantis The Palm resort in Dubai</image:caption>
     </image:image>
+
     <image:image>
-      <image:loc>https://elitejetskiae.com/skyline.jpg</image:loc>
+      <image:loc>https://www.elitejetskisae.com/skyline.jpg</image:loc>
       <image:title>Dubai Skyline Jet Ski Experience</image:title>
       <image:caption>See the magnificent Dubai skyline from the water on a jet ski tour</image:caption>
     </image:image>
+
     <image:image>
-      <image:loc>https://elitejetskiae.com/logo.jpg</image:loc>
+      <image:loc>https://www.elitejetskisae.com/logo.jpg</image:loc>
       <image:title>Elite Jetskis AE Logo</image:title>
       <image:caption>Elite Jetskis AE - Premier Jet Ski Rental in Dubai</image:caption>
     </image:image>
   </url>
-  
-  <!-- Booking Page (SPA route) -->
-  <url>
-    <loc>https://elitejetskiae.com/#booking</loc>
-    <lastmod>2024-12-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
+
 </urlset>
+
 
