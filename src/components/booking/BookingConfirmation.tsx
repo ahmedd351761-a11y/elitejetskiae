@@ -266,8 +266,8 @@ _Booking created: ${new Date().toLocaleString()}_`;
         <div className="mt-8 pt-8 border-t border-gray-200 text-gray-600">
           <p className="mb-4 font-semibold text-[#0A1128]">Questions about your booking?</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-            <a href="tel:+971552851012" className="text-[#E31E24] hover:underline font-semibold flex items-center gap-1">
-              📱 +971 55 285 1012
+            <a href="tel:+971526977676" className="text-[#E31E24] hover:underline font-semibold flex items-center gap-1">
+              📱 +971 52 697 7676
             </a>
             <span className="hidden sm:inline text-gray-400">•</span>
             <a href="mailto:elitejetskisae@gmail.com" className="text-[#E31E24] hover:underline font-semibold flex items-center gap-1">

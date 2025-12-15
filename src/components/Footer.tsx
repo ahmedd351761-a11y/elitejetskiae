@@ -27,12 +27,12 @@ export default function Footer() {
 
             <address className="space-y-4 mb-6 not-italic" itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
               <a
-                href="tel:+971552851012"
+                href="tel:+971526977676"
                 className="flex items-center space-x-3 text-gray-300 hover:text-[#E31E24] transition-colors"
                 itemProp="telephone"
               >
                 <Phone size={20} aria-hidden="true" />
-                <span>+971 55 285 1012</span>
+                <span>+971 52 697 7676</span>
               </a>
 
               <a
