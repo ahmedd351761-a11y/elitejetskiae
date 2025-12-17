@@ -70,6 +70,22 @@ export default function PackageSelection({ onSelect }: Props) {
     return defaultPackageImages[index % defaultPackageImages.length];
   };
 
+  // Helper function to translate package name and description
+  const translatePackage = (pkg: Package) => {
+    const duration = pkg.duration_minutes;
+    const nameKey = `package.db.${duration}.name`;
+    const descKey = `package.db.${duration}.desc`;
+    
+    // Try to get translation, fallback to original if not found
+    const translatedName = t(nameKey);
+    const translatedDesc = t(descKey);
+    
+    return {
+      name: translatedName !== nameKey ? translatedName : pkg.name,
+      description: translatedDesc !== descKey ? translatedDesc : pkg.description
+    };
+  };
+
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto">
@@ -137,23 +153,30 @@ export default function PackageSelection({ onSelect }: Props) {
               />
               <div className="absolute top-4 right-4 bg-[#E31E24] text-white px-4 py-2 rounded-full flex items-center space-x-2">
                 <Clock size={16} />
-                <span className="font-semibold">{pkg.duration_minutes} min</span>
+                <span className="font-semibold">{pkg.duration_minutes} {t('packages.min')}</span>
               </div>
             </div>
 
             <div className="p-6">
-              <h3 className="text-2xl font-black text-[#0A1128] mb-2">
-                {pkg.name}
-              </h3>
-              {pkg.description && (
-                <p className="text-gray-600 mb-4">
-                  {pkg.description}
-                </p>
-              )}
+              {(() => {
+                const translated = translatePackage(pkg);
+                return (
+                  <>
+                    <h3 className="text-2xl font-black text-[#0A1128] mb-2">
+                      {translated.name}
+                    </h3>
+                    {translated.description && (
+                      <p className="text-gray-600 mb-4">
+                        {translated.description}
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
 
               <div className="flex items-center space-x-2 text-gray-600 mb-4">
                 <Users size={18} />
-                <span>Up to {pkg.max_participants} participants</span>
+                <span>{t('booking.upToParticipants')} {pkg.max_participants} {t('booking.participantsText')}</span>
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t">
