@@ -5,7 +5,7 @@ import CustomerForm from './CustomerForm';
 import BookingSummary from './BookingSummary';
 import BookingConfirmation from './BookingConfirmation';
 import { Package, BookingFormData } from '@/types';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 type BookingStep = 'package' | 'datetime' | 'customer' | 'summary' | 'confirmation';
 

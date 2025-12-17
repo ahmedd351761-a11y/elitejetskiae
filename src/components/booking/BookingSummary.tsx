@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Calendar, Clock, User, Mail, Phone, Users, MessageCircle, Loader2 } from 'lucide-react';
 import { Package, BookingFormData } from '@/types';
 import { formatPrice } from '@/utils/bookingUtils';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {
   package: Package;

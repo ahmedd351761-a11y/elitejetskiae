@@ -3,7 +3,7 @@ import { Calendar, Clock, ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react
 import { supabase } from '@/lib/supabase';
 import { Package } from '@/types';
 import { generateTimeSlots, formatDate } from '@/utils/bookingUtils';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {
   package: Package;
