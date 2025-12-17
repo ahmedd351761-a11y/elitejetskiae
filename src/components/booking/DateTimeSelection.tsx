@@ -3,6 +3,7 @@ import { Calendar, Clock, ArrowLeft, AlertCircle, RefreshCw } from 'lucide-react
 import { supabase } from '@/lib/supabase';
 import { Package } from '@/types';
 import { generateTimeSlots, formatDate } from '@/utils/bookingUtils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   package: Package;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Props) {
+  const { t, language } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [bookedSlots, setBookedSlots] = useState<Set<string>>(new Set());
@@ -43,7 +45,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
 
       if (fetchError) {
         console.error('Error fetching availability:', fetchError);
-        setError('Failed to load availability. Please try again.');
+        setError(t('booking.failedToLoad'));
         setBookedSlots(new Set());
         return;
       }
@@ -62,7 +64,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
       console.log(`Loaded availability for ${date}: ${booked.size} slots booked`);
     } catch (err) {
       console.error('Error fetching booked slots:', err);
-      setError('Unable to check availability. Please try again.');
+      setError(t('booking.unableToCheck'));
       setBookedSlots(new Set());
     } finally {
       setLoading(false);
@@ -98,9 +100,9 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
 
   const getSlotLabel = (status: 'available' | 'booked' | 'past'): string => {
     switch (status) {
-      case 'past': return 'Past';
-      case 'booked': return 'Booked';
-      case 'available': return 'Available';
+      case 'past': return t('booking.past');
+      case 'booked': return t('booking.booked');
+      case 'available': return t('booking.available');
     }
   };
 
@@ -125,7 +127,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
       // Final check before proceeding
       const status = getSlotStatus(selectedTime);
       if (status !== 'available') {
-        setError('This time slot is no longer available. Please select another time.');
+        setError(t('booking.slotNoLongerAvailable'));
         setSelectedTime('');
         return;
       }
@@ -146,15 +148,15 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
         className="flex items-center space-x-2 text-gray-600 hover:text-[#E31E24] mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        <span>Back to packages</span>
+        <span>{t('booking.backToPackages')}</span>
       </button>
 
       <div className="bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-3xl font-black text-[#0A1128] mb-2">
-          Select Date & Time
+          {t('booking.selectDateAndTime')}
         </h2>
         <p className="text-gray-600 mb-8">
-          Booking for: <span className="font-bold text-[#E31E24]">{pkg.name}</span>
+          {t('booking.bookingFor')} <span className="font-bold text-[#E31E24]">{pkg.name}</span>
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -162,7 +164,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Calendar className="text-[#E31E24]" size={24} />
-              <h3 className="text-xl font-bold text-[#0A1128]">Select Date</h3>
+              <h3 className="text-xl font-bold text-[#0A1128]">{t('booking.selectDate')}</h3>
             </div>
 
             <div className="max-h-96 overflow-y-auto border rounded-lg">
@@ -178,10 +180,10 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
                     }`}
                   >
                     <div className="font-semibold">
-                      {dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+                      {dateObj.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                     </div>
                     {isToday && (
-                      <div className="text-xs mt-1 opacity-90">Today</div>
+                      <div className="text-xs mt-1 opacity-90">{t('booking.today')}</div>
                     )}
                   </button>
                 );
@@ -193,17 +195,17 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Clock className="text-[#E31E24]" size={24} />
-              <h3 className="text-xl font-bold text-[#0A1128]">Select Time</h3>
+              <h3 className="text-xl font-bold text-[#0A1128]">{t('booking.selectTime')}</h3>
             </div>
 
             {!selectedDate ? (
               <div className="text-center py-12 text-gray-400">
-                Please select a date first
+                {t('booking.pleaseSelectDate')}
               </div>
             ) : loading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E31E24] mx-auto" />
-                <p className="text-gray-500 mt-4">Checking availability...</p>
+                <p className="text-gray-500 mt-4">{t('booking.checkingAvailability')}</p>
               </div>
             ) : error ? (
               <div className="text-center py-8">
@@ -214,7 +216,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
                   className="inline-flex items-center space-x-2 bg-[#E31E24] hover:bg-[#c41a20] text-white px-4 py-2 rounded-full font-semibold transition-all"
                 >
                   <RefreshCw size={16} />
-                  <span>Retry</span>
+                  <span>{t('booking.retry')}</span>
                 </button>
               </div>
             ) : (
@@ -223,15 +225,15 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
                 <div className="flex items-center justify-center gap-4 mb-4 text-xs">
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 rounded-full bg-green-500" />
-                    <span className="text-gray-600">Available</span>
+                    <span className="text-gray-600">{t('booking.available')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <span className="text-gray-600">Booked</span>
+                    <span className="text-gray-600">{t('booking.booked')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="w-3 h-3 rounded-full bg-gray-400" />
-                    <span className="text-gray-600">Past</span>
+                    <span className="text-gray-600">{t('booking.past')}</span>
                   </div>
                 </div>
 
@@ -275,9 +277,9 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
           <div>
             {selectedDate && selectedTime && (
               <div className="text-sm text-gray-600">
-                <p className="font-semibold text-[#0A1128]">Selected:</p>
-                <p>{new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                <p>at {selectedTime}</p>
+                <p className="font-semibold text-[#0A1128]">{t('booking.selected')}</p>
+                <p>{new Date(selectedDate).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <p>{t('booking.at')} {selectedTime}</p>
               </div>
             )}
           </div>
@@ -286,7 +288,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
             disabled={!selectedDate || !selectedTime}
             className="bg-[#E31E24] hover:bg-[#c41a20] text-white px-8 py-3 rounded-full font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed transition-all hover:scale-105 disabled:hover:scale-100"
           >
-            Continue
+            {t('booking.continue')}
           </button>
         </div>
       </div>

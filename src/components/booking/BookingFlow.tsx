@@ -5,10 +5,12 @@ import CustomerForm from './CustomerForm';
 import BookingSummary from './BookingSummary';
 import BookingConfirmation from './BookingConfirmation';
 import { Package, BookingFormData } from '@/types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type BookingStep = 'package' | 'datetime' | 'customer' | 'summary' | 'confirmation';
 
 export default function BookingFlow() {
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState<BookingStep>('package');
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [bookingData, setBookingData] = useState<Partial<BookingFormData>>({
@@ -72,10 +74,10 @@ export default function BookingFlow() {
               ))}
             </div>
             <div className="flex items-center justify-between mt-2 text-sm">
-              <span className={currentStep === 'package' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>Package</span>
-              <span className={currentStep === 'datetime' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>Date & Time</span>
-              <span className={currentStep === 'customer' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>Your Info</span>
-              <span className={currentStep === 'summary' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>Confirm</span>
+              <span className={currentStep === 'package' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>{t('booking.stepPackage')}</span>
+              <span className={currentStep === 'datetime' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>{t('booking.stepDateTime')}</span>
+              <span className={currentStep === 'customer' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>{t('booking.stepInfo')}</span>
+              <span className={currentStep === 'summary' ? 'font-bold text-[#E31E24]' : 'text-gray-600'}>{t('booking.stepConfirm')}</span>
             </div>
           </div>
         )}

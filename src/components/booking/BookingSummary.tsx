@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Calendar, Clock, User, Mail, Phone, Users, MessageCircle, Loader2 } from 'lucide-react';
 import { Package, BookingFormData } from '@/types';
 import { formatPrice } from '@/utils/bookingUtils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   package: Package;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function BookingSummary({ package: pkg, bookingData, onConfirm, onBack }: Props) {
+  const { t, language } = useLanguage();
   const [promoCode, setPromoCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -71,33 +73,33 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
         className="flex items-center space-x-2 text-gray-600 hover:text-[#E31E24] mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        <span>Back to form</span>
+        <span>{t('booking.backToForm')}</span>
       </button>
 
       <div className="bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-3xl font-black text-[#0A1128] mb-2">
-          Booking Summary
+          {t('booking.summary')}
         </h2>
         <p className="text-gray-600 mb-8">
-          Please review your booking details before confirming
+          {t('booking.reviewDetails')}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-[#0A1128] mb-4">Tour Details</h3>
+              <h3 className="text-lg font-bold text-[#0A1128] mb-4">{t('booking.tourDetails')}</h3>
               <div className="space-y-3 bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Package:</span>
+                  <span className="text-gray-600">{t('booking.package')}</span>
                   <span className="font-semibold text-[#0A1128]">{pkg.name}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Duration:</span>
-                  <span className="font-semibold text-[#0A1128]">{pkg.duration_minutes} minutes</span>
+                  <span className="text-gray-600">{t('booking.duration')}</span>
+                  <span className="font-semibold text-[#0A1128]">{pkg.duration_minutes} {t('packages.min')}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-gray-700">
                   <Calendar size={18} />
-                  <span>{new Date(bookingData.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span>{new Date(bookingData.date).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-gray-700">
                   <Clock size={18} />
@@ -107,7 +109,7 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-[#0A1128] mb-4">Customer Details</h3>
+              <h3 className="text-lg font-bold text-[#0A1128] mb-4">{t('booking.customerDetails')}</h3>
               <div className="space-y-3 bg-gray-50 rounded-lg p-4">
                 <div className="flex items-center space-x-2 text-gray-700">
                   <User size={18} />
@@ -123,7 +125,7 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
                 </div>
                 <div className="flex items-center space-x-2 text-gray-700">
                   <Users size={18} />
-                  <span>{bookingData.numParticipants} {bookingData.numParticipants === 1 ? 'participant' : 'participants'}</span>
+                  <span>{bookingData.numParticipants} {bookingData.numParticipants === 1 ? t('booking.participant') : t('booking.participants')}</span>
                 </div>
               </div>
             </div>
@@ -131,7 +133,7 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
 
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-[#0A1128] mb-4">Payment Details</h3>
+              <h3 className="text-lg font-bold text-[#0A1128] mb-4">{t('booking.paymentDetails')}</h3>
 
               <div className="space-y-4">
                 <div className="bg-green-50 border-2 border-green-500 rounded-lg p-4">
@@ -139,40 +141,39 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
                     <div className="bg-green-500 rounded-full p-2">
                       <MessageCircle size={20} className="text-white" />
                     </div>
-                    <span className="font-bold text-green-800">Pay via WhatsApp</span>
+                    <span className="font-bold text-green-800">{t('booking.payViaWhatsApp')}</span>
                   </div>
                   <p className="text-green-700 text-sm leading-relaxed">
-                    After confirming your booking, you'll be directed to send your details via WhatsApp. 
-                    Our team will then share payment options including <strong>bank transfer</strong> or <strong>cash on arrival</strong>.
+                    {t('booking.paymentInfo')}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-[#0A1128] mb-2">
-                    Promo Code (Optional)
+                    {t('booking.promoCode')}
                   </label>
                   <input
                     type="text"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E31E24]"
-                    placeholder="Enter promo code"
+                    placeholder={t('booking.enterPromoCode')}
                   />
                 </div>
 
                 <div className="bg-gray-50 rounded-lg p-6 space-y-3">
                   <div className="flex items-center justify-between text-gray-700">
-                    <span>Package Price:</span>
+                    <span>{t('booking.packagePrice')}</span>
                     <span>{formatPrice(pkg.price_aed)}</span>
                   </div>
                   {promoCode && (
                     <div className="flex items-center justify-between text-green-600">
-                      <span>Discount:</span>
+                      <span>{t('booking.discount')}</span>
                       <span>- 0 AED</span>
                     </div>
                   )}
                   <div className="border-t pt-3 flex items-center justify-between">
-                    <span className="text-xl font-black text-[#0A1128]">Total:</span>
+                    <span className="text-xl font-black text-[#0A1128]">{t('booking.total')}</span>
                     <span className="text-3xl font-black text-[#E31E24]">{formatPrice(totalPrice)}</span>
                   </div>
                 </div>
@@ -196,20 +197,20 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
             {loading ? (
               <>
                 <Loader2 size={20} className="animate-spin" />
-                <span>Processing...</span>
+                <span>{t('booking.processing')}</span>
               </>
             ) : (
-              <span>Confirm Booking</span>
+              <span>{t('booking.confirmBooking')}</span>
             )}
           </button>
         </div>
 
         <div className="mt-6 flex items-center justify-center space-x-4 text-gray-400 text-sm">
-          <span>Secure Booking</span>
+          <span>{t('booking.secureBooking')}</span>
           <span>•</span>
-          <span>Payment via WhatsApp</span>
+          <span>{t('booking.paymentViaWhatsApp')}</span>
           <span>•</span>
-          <span>Instant Confirmation</span>
+          <span>{t('booking.instantConfirmation')}</span>
         </div>
       </div>
     </div>

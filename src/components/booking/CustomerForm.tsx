@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, User, Mail, Phone, Users, AlertCircle } from 'lucide-react';
 import { BookingFormData } from '@/types';
 import { validateEmail, validatePhone } from '@/utils/bookingUtils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
   onSubmit: (data: Partial<BookingFormData>) => void;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function CustomerForm({ onSubmit, onBack }: Props) {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
@@ -40,28 +42,28 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
     switch (field) {
       case 'customerName':
         if (!value || (value as string).trim().length < 2) {
-          newErrors.customerName = 'Please enter your full name';
+          newErrors.customerName = t('booking.enterFullName');
         } else {
           delete newErrors.customerName;
         }
         break;
       case 'customerEmail':
         if (!validateEmail(value as string)) {
-          newErrors.customerEmail = 'Please enter a valid email address';
+          newErrors.customerEmail = t('booking.enterValidEmail');
         } else {
           delete newErrors.customerEmail;
         }
         break;
       case 'customerPhone':
         if (!validatePhone(value as string)) {
-          newErrors.customerPhone = 'Please enter a valid UAE phone number';
+          newErrors.customerPhone = t('booking.enterValidPhone');
         } else {
           delete newErrors.customerPhone;
         }
         break;
       case 'acceptTerms':
         if (!value) {
-          newErrors.acceptTerms = 'You must accept the terms and conditions';
+          newErrors.acceptTerms = t('booking.mustAcceptTerms');
         } else {
           delete newErrors.acceptTerms;
         }
@@ -104,21 +106,21 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
         className="flex items-center space-x-2 text-gray-600 hover:text-[#E31E24] mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        <span>Back to date selection</span>
+        <span>{t('booking.backToDateSelection')}</span>
       </button>
 
       <div className="bg-white rounded-xl shadow-lg p-8">
         <h2 className="text-3xl font-black text-[#0A1128] mb-2">
-          Your Information
+          {t('booking.yourInformation')}
         </h2>
         <p className="text-gray-600 mb-8">
-          Please provide your details for the booking
+          {t('booking.provideDetails')}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Full Name *
+              {t('booking.fullName')} *
             </label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -145,7 +147,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
 
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Email Address *
+              {t('booking.emailAddress')} *
             </label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -172,7 +174,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
 
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Phone Number *
+              {t('booking.phoneNumber')} *
             </label>
             <div className="relative">
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -199,7 +201,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
 
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Number of Participants *
+              {t('booking.numberOfParticipants')} *
             </label>
             <div className="relative">
               <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -208,15 +210,15 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
                 onChange={(e) => handleChange('numParticipants', parseInt(e.target.value))}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E31E24]"
               >
-                <option value={1}>1 Person</option>
-                <option value={2}>2 People</option>
+                <option value={1}>{t('booking.onePerson')}</option>
+                <option value={2}>{t('booking.twoPeople')}</option>
               </select>
             </div>
           </div>
 
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Emergency Contact (Optional)
+              {t('booking.emergencyContact')}
             </label>
             <input
               type="tel"
@@ -229,7 +231,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
 
           <div>
             <label className="block text-sm font-bold text-[#0A1128] mb-2">
-              Special Requirements (Optional)
+              {t('booking.specialRequirements')}
             </label>
             <textarea
               value={formData.specialRequirements}
@@ -250,7 +252,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
                 className="mt-1"
               />
               <span className="text-sm text-gray-700">
-                I accept the terms and conditions, including the safety guidelines and cancellation policy. I understand that water activities carry inherent risks. *
+                {t('booking.acceptTerms')} *
               </span>
             </label>
             {errors.acceptTerms && touched.acceptTerms && (
@@ -266,7 +268,7 @@ export default function CustomerForm({ onSubmit, onBack }: Props) {
               type="submit"
               className="bg-[#E31E24] hover:bg-[#c41a20] text-white px-8 py-3 rounded-full font-semibold transition-all hover:scale-105"
             >
-              Continue to Summary
+              {t('booking.continueToSummary')}
             </button>
           </div>
         </form>
