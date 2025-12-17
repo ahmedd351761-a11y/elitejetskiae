@@ -1,6 +1,12 @@
 import { ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
-export default function Footer() {
+interface FooterProps {
+  onBookNowClick?: () => void;
+}
+
+export default function Footer({ onBookNowClick }: FooterProps) {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   
   return (
@@ -55,38 +61,38 @@ export default function Footer() {
               </div>
             </address>
 
-            <a 
-              href="/#booking"
+            <button
+              onClick={onBookNowClick}
               className="bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold inline-flex items-center space-x-2 transition-all hover:scale-105"
               aria-label="Book your jet ski tour now"
             >
-              <span>BOOK NOW</span>
+              <span>{t('footer.bookNow')}</span>
               <ArrowRight size={20} aria-hidden="true" />
-            </a>
+            </button>
           </div>
 
           {/* Navigation */}
           <nav aria-label="Footer navigation">
-            <h3 className="text-xl font-black mb-6">QUICK LINKS</h3>
+            <h3 className="text-xl font-black mb-6">{t('footer.quickLinks')}</h3>
             <ul className="space-y-3">
               <li>
                 <a href="/" className="text-gray-300 hover:text-[#E31E24] transition-colors">
-                  Home
+                  {t('footer.home')}
                 </a>
               </li>
               <li>
                 <a href="/#packages" className="text-gray-300 hover:text-[#E31E24] transition-colors">
-                  Tour Packages
+                  {t('footer.tourPackages')}
                 </a>
               </li>
               <li>
                 <a href="/#about" className="text-gray-300 hover:text-[#E31E24] transition-colors">
-                  About Us
+                  {t('footer.about')}
                 </a>
               </li>
               <li>
                 <a href="/#faq" className="text-gray-300 hover:text-[#E31E24] transition-colors">
-                  FAQ
+                  {t('footer.faq')}
                 </a>
               </li>
               <li>
@@ -96,33 +102,33 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-[#E31E24] transition-colors"
                 >
-                  Contact Us
+                  {t('footer.contactUs')}
                 </a>
               </li>
             </ul>
             
-            <h3 className="text-xl font-black mb-4 mt-8">OUR SERVICES</h3>
+            <h3 className="text-xl font-black mb-4 mt-8">{t('footer.ourServices')}</h3>
             <ul className="space-y-2 text-gray-300 text-sm">
-              <li>Jet Ski Rental Dubai</li>
-              <li>Burj Al Arab Jet Ski Tour</li>
-              <li>Atlantis The Palm Tour</li>
-              <li>Dubai Marina Water Sports</li>
-              <li>Private Jet Ski Tours</li>
+              <li>{t('footer.service1')}</li>
+              <li>{t('footer.service2')}</li>
+              <li>{t('footer.service3')}</li>
+              <li>{t('footer.service4')}</li>
+              <li>{t('footer.service5')}</li>
             </ul>
           </nav>
 
           {/* Newsletter & Social */}
           <div>
-            <h3 className="text-xl font-black mb-6">STAY CONNECTED</h3>
+            <h3 className="text-xl font-black mb-6">{t('footer.stayConnected')}</h3>
             <p className="text-gray-300 mb-4">
-              Subscribe to our newsletter for exclusive offers and Dubai water sports updates.
+              {t('footer.newsletter')}
             </p>
             <form className="flex space-x-2 mb-8" onSubmit={(e) => e.preventDefault()}>
               <label htmlFor="footer-email" className="sr-only">Email address</label>
               <input
                 id="footer-email"
                 type="email"
-                placeholder="Your email"
+                placeholder={t('footer.emailPlaceholder')}
                 className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 focus:border-[#E31E24] focus:outline-none text-white placeholder-gray-400"
                 aria-label="Enter your email for newsletter"
               />
@@ -130,11 +136,11 @@ export default function Footer() {
                 type="submit"
                 className="bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold transition-all hover:scale-105"
               >
-                Subscribe
+                {t('footer.subscribe')}
               </button>
             </form>
 
-            <h4 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wider">Follow Us</h4>
+            <h4 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wider">{t('footer.followUs')}</h4>
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/elitejetskisae/"
@@ -187,7 +193,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-            <p>© {currentYear} Elite Jetskis AE. All rights reserved.</p>
+            <p>© {currentYear} Elite Jetskis AE. {t('footer.rights')}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <span>Jet Ski Rental Dubai</span>
               <span>•</span>

@@ -1,6 +1,8 @@
 import { ArrowRight, Instagram as InstagramIcon } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Instagram() {
+  const { t } = useLanguage();
   const instagramPosts = [
     '/latest.jpg',
     '/burj.jpg',
@@ -13,7 +15,7 @@ export default function Instagram() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-[#0A1128]">
-            FOLLOW US ON INSTAGRAM
+            {t('instagram.title')}
           </h2>
           <a
             href="https://www.instagram.com/elitejetskisae/"
@@ -21,7 +23,7 @@ export default function Instagram() {
             rel="noopener noreferrer"
             className="hidden md:flex bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold items-center space-x-2 transition-all hover:scale-105"
           >
-            <span>FOLLOW US</span>
+            <span>{t('instagram.followUs')}</span>
             <ArrowRight size={20} />
           </a>
         </div>
@@ -57,7 +59,7 @@ export default function Instagram() {
             rel="noopener noreferrer"
             className="inline-flex bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold items-center space-x-2 transition-all hover:scale-105"
           >
-            <span>FOLLOW US</span>
+            <span>{t('instagram.followUs')}</span>
             <ArrowRight size={20} />
           </a>
         </div>

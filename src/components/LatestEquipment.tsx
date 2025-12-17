@@ -1,27 +1,30 @@
 import { CheckCircle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function LatestEquipment() {
+  const { t } = useLanguage();
+  
   const jetSkis = [
     {
-      category: "FOR COMFORT & VERSATILITY",
-      model: "2025 Yamaha VX-C",
+      category: t('equipment.category1'),
+      model: t('equipment.model1'),
       image: "/2025YamahaVX-C.jpg",
-      description: "Versatile. Reliable. Perfect for All Riders. The ideal choice for recreational adventures and family outings with exceptional stability and comfort.",
+      description: t('equipment.model1Desc'),
       specs: "1,049cc | 3-Cylinder Engine | Up to 3 Riders"
     },
     {
-      category: "FOR TRICKS & STUNTS",
-      model: "2025 Spark Trixx™",
+      category: t('equipment.category2'),
+      model: t('equipment.model2'),
       image: "/trixx.jpg",
-      description: "Playful. Agile. Built For Stunts. Your go-to for freestyle tricks and exhilarating water maneuvers with enhanced control and stability.",
+      description: t('equipment.model2Desc'),
       specs: "90 HP | Rotax® 900 ACE™ | Extended VTS™"
     },
     {
-      category: "FOR SPEED & POWER",
-      model: "2021 SEA-DOO RXT-X 350",
+      category: t('equipment.category3'),
+      model: t('equipment.model3'),
       image: "/rxtx.jpeg",
-      subtitle: "LIMITED EDITION PURPLE/NEON",
-      description: "Sporty. Powerful. Made for Thrill Chasers. Experience unmatched speed and performance with cutting-edge technology and race-inspired design.",
+      subtitle: t('equipment.model3Subtitle'),
+      description: t('equipment.model3Desc'),
       specs: "81 MPH @ 8,350 RPM | 350 HORSEPOWER"
     }
   ];
@@ -40,7 +43,7 @@ export default function LatestEquipment() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-8 left-8 right-8">
                 <h3 className="text-3xl md:text-4xl font-black text-white">
-                  OUR JET SKIS ARE THE LATEST MODELS
+                  {t('equipment.subtitle')}
                 </h3>
               </div>
             </div>
@@ -48,17 +51,17 @@ export default function LatestEquipment() {
 
           <div className="space-y-6">
             <h2 className="text-4xl md:text-5xl font-black text-[#0A1128]">
-              2025 MODELS
+              {t('equipment.title')}
             </h2>
             <p className="text-lg text-gray-700 leading-relaxed">
-              We'll make this the best Jet Ski experience you've ever had. At EliteJetskis AE, we create memories via our tours, so that our customers can relive them again and again. We are the best Jet Ski service in Dubai.
+              {t('equipment.description')}
             </p>
 
             <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6 inline-block">
               <div className="flex items-center space-x-3">
                 <CheckCircle className="text-green-600" size={32} />
                 <p className="text-lg font-bold text-green-700">
-                  The best Jet Ski experience you've ever had!
+                  {t('equipment.guarantee')}
                 </p>
               </div>
             </div>

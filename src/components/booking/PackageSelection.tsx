@@ -3,12 +3,14 @@ import { Clock, Users, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react'
 import { supabase } from '@/lib/supabase';
 import { Package } from '@/types';
 import { formatPrice } from '@/utils/bookingUtils';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {
   onSelect: (pkg: Package) => void;
 }
 
 export default function PackageSelection({ onSelect }: Props) {
+  const { t } = useLanguage();
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -72,7 +74,7 @@ export default function PackageSelection({ onSelect }: Props) {
     return (
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
-          Select Your Package
+          {t('booking.selectPackage')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2, 3, 4].map((i) => (
@@ -87,7 +89,7 @@ export default function PackageSelection({ onSelect }: Props) {
     return (
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
-          Select Your Package
+          {t('booking.selectPackage')}
         </h2>
         <div className="bg-red-50 border border-red-200 rounded-xl p-8 text-center">
           <AlertCircle className="mx-auto text-red-500 mb-4" size={48} />
@@ -97,7 +99,7 @@ export default function PackageSelection({ onSelect }: Props) {
             className="inline-flex items-center space-x-2 bg-[#E31E24] hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold transition-all"
           >
             <RefreshCw size={18} />
-            <span>Try Again</span>
+            <span>{t('booking.tryAgain')}</span>
           </button>
           <p className="text-sm text-gray-500 mt-4">
             Or contact us via WhatsApp: <a href="https://wa.me/971526977676" className="text-[#E31E24] hover:underline">+971 52 697 7676</a>
@@ -110,7 +112,7 @@ export default function PackageSelection({ onSelect }: Props) {
   return (
     <div className="max-w-6xl mx-auto">
       <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
-        Select Your Package
+        {t('booking.selectPackage')}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,7 +163,7 @@ export default function PackageSelection({ onSelect }: Props) {
                   </span>
                 </div>
                 <div className="bg-[#E31E24] group-hover:bg-[#c41a20] text-white px-6 py-3 rounded-full font-semibold flex items-center space-x-2 transition-all">
-                  <span>Select</span>
+                  <span>{t('booking.select')}</span>
                   <CheckCircle size={18} />
                 </div>
               </div>

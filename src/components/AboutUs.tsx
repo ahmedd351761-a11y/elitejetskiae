@@ -1,26 +1,29 @@
 import { Users, Diamond, Star, MapPin } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function AboutUs() {
+  const { t } = useLanguage();
+  
   const features = [
     {
       icon: Users,
-      title: 'Experienced Team',
-      description: 'EliteJetskisAE team has years of experience in the jet ski industry! We know what you are looking for and we will go beyond your expectation to make you have a wonderful time.'
+      title: t('about.experiencedTeam'),
+      description: t('about.experiencedTeamDesc')
     },
     {
       icon: Diamond,
-      title: 'Quality First',
-      description: 'Quality is not a one-time act. It is a habit at EliteJetskisAE! Coming for a jet ski trip or a flyboard session, we will make the extra effort to make you have the best time you could ever imagine. You will be delighted and ask for more.'
+      title: t('about.qualityFirst'),
+      description: t('about.qualityFirstDesc')
     },
     {
       icon: Star,
-      title: 'Unique Experience',
-      description: 'At EliteJetskisAE, we will make you feel unique. Our jet skis include 2025 Sea-Doo RXP-X 325 models with 1800cc / 325 horse power; we\'ll be looking after you from start to finish, we have it all at the ready for you.'
+      title: t('about.uniqueExperience'),
+      description: t('about.uniqueExperienceDesc')
     },
     {
       icon: MapPin,
-      title: 'Great Location',
-      description: 'EliteJetskisAE rental is conveniently located on Jumeirah 4 in one of the most prestigious areas in Dubai, close by the iconic Burj al Arab and next to Kite beach, which is meters away from our station if you wanna sunbath after your jet ski session.'
+      title: t('about.greatLocation'),
+      description: t('about.greatLocationDesc')
     }
   ];
 
@@ -29,14 +32,14 @@ export default function AboutUs() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-[#0A1128] mb-6">
-            ABOUT US
+            {t('about.title')}
           </h2>
           <div className="max-w-4xl mx-auto space-y-4 text-lg text-gray-700 leading-relaxed">
             <p>
-              EliteJetskisAE is owned and operated by Abdullah Mubarak, a young entrepreneur passionate about watersports with years of experience in the industry.
+              {t('about.paragraph1')}
             </p>
             <p>
-              At EliteJetskisAE, we know what you are looking for and we'll meet your requirements; you can come & meet us down at 'EliteJetskisAE' to create memories which will last forever.
+              {t('about.paragraph2')}
             </p>
           </div>
         </div>

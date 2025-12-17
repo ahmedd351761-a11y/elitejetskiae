@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import TourPackages from './components/TourPackages';
@@ -27,25 +28,29 @@ function App() {
 
   if (currentView === 'booking') {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header onBookNowClick={handleBookNow} onHomeClick={handleHomeClick} />
-        <BookingFlow />
-      </div>
+      <LanguageProvider>
+        <div className="min-h-screen bg-gray-50">
+          <Header onBookNowClick={handleBookNow} onHomeClick={handleHomeClick} />
+          <BookingFlow />
+        </div>
+      </LanguageProvider>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <Header onBookNowClick={handleBookNow} onHomeClick={handleHomeClick} />
-      <Hero onBookNowClick={handleBookNow} />
-      <TourPackages onBookClick={handleBookNow} />
-      <Statistics />
-      <AboutUs />
-      <LatestEquipment />
-      <FAQ />
-      <Instagram />
-      <Footer />
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen">
+        <Header onBookNowClick={handleBookNow} onHomeClick={handleHomeClick} />
+        <Hero onBookNowClick={handleBookNow} />
+        <TourPackages onBookClick={handleBookNow} />
+        <Statistics />
+        <AboutUs />
+        <LatestEquipment />
+        <FAQ />
+        <Instagram />
+        <Footer onBookNowClick={handleBookNow} />
+      </div>
+    </LanguageProvider>
   );
 }
 

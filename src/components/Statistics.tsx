@@ -1,6 +1,9 @@
 import { Award, Users, Globe } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Statistics() {
+  const { t } = useLanguage();
+  
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -41,8 +44,8 @@ export default function Statistics() {
                 <Globe size={48} className="text-white" />
               </div>
             </div>
-            <h3 className="text-5xl font-black text-center mb-2">2 Languages</h3>
-            <p className="text-xl text-center text-white/90">EN AR</p>
+            <h3 className="text-5xl font-black text-center mb-2">{t('stats.languages')}</h3>
+            <p className="text-xl text-center text-white/90">{t('stats.languagesSub')}</p>
             <div className="mt-6 flex items-center justify-center space-x-4">
               <span className="text-6xl">🇦🇪</span>
               <span className="text-6xl">🇺🇸</span>

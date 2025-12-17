@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Minus } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FAQItem {
   question: string;
@@ -7,40 +8,41 @@ interface FAQItem {
 }
 
 export default function FAQ() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqs: FAQItem[] = [
     {
-      question: 'I have never driven a Jet Ski, can I take part in the trip?',
-      answer: 'Absolutely! Our experienced team will provide full training and guidance before your tour. We ensure all safety measures are in place and will teach you everything you need to know to enjoy your jet ski experience safely.'
+      question: t('faq.q1'),
+      answer: t('faq.a1')
     },
     {
-      question: 'Do I need a boat or Jetski license to drive the Jetski?',
-      answer: 'No license is required! Our tours are guided and we provide comprehensive instructions before departure. However, you must be at least 16 years old to drive a jet ski.'
+      question: t('faq.q2'),
+      answer: t('faq.a2')
     },
     {
-      question: 'Can my child sit behind me?',
-      answer: 'Yes, children can ride as passengers if they are at least 5 years old. They must wear proper safety equipment including life jackets which we provide. Maximum 2 people per jet ski.'
+      question: t('faq.q3'),
+      answer: t('faq.a3')
     },
     {
-      question: 'Do you take pictures while at sea?',
-      answer: 'Yes! We offer photography services during your tour to capture your amazing experience. You can purchase the photos after your tour or bring your own waterproof camera.'
+      question: t('faq.q4'),
+      answer: t('faq.a4')
     },
     {
-      question: "I don't know how to swim, is that risky?",
-      answer: 'While swimming ability is recommended, it is not mandatory. All participants must wear life jackets at all times, which we provide. Our guides are trained in water safety and will be with you throughout the tour.'
+      question: t('faq.q5'),
+      answer: t('faq.a5')
     },
     {
-      question: 'What should I bring for the jet ski tour?',
-      answer: 'We recommend bringing sunscreen, sunglasses with a strap, a towel, and a change of clothes. Waterproof cameras are welcome. We provide all safety equipment including life jackets.'
+      question: t('faq.q6'),
+      answer: t('faq.a6')
     },
     {
-      question: 'What is the minimum age requirement?',
-      answer: 'The minimum age to drive a jet ski is 16 years old. Children from 5 years and above can ride as passengers with an adult. All minors must be accompanied by a parent or legal guardian.'
+      question: t('faq.q7'),
+      answer: t('faq.a7')
     },
     {
-      question: 'What happens if weather conditions are bad?',
-      answer: 'Safety is our top priority. If weather conditions are unsuitable, we will contact you to reschedule your booking or offer a full refund. We monitor weather conditions closely and will never compromise on safety.'
+      question: t('faq.q8'),
+      answer: t('faq.a8')
     }
   ];
 
@@ -53,9 +55,9 @@ export default function FAQ() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-[#0A1128] mb-4">
-            FREQUENTLY ASKED QUESTIONS
+            {t('faq.title')}
           </h2>
-          <p className="text-lg text-gray-600">Everything you need to know</p>
+          <p className="text-lg text-gray-600">{t('faq.subtitle')}</p>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-4">

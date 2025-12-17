@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const heroImages = [
   '/1.jpg',
@@ -12,6 +13,7 @@ interface HeroProps {
 }
 
 export default function Hero({ onBookNowClick }: HeroProps = {}) {
+  const { t } = useLanguage();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function Hero({ onBookNowClick }: HeroProps = {}) {
         <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-16 sm:pb-20">
           <div className="max-w-2xl space-y-4">
             <p className="hero-kicker text-lg sm:text-xl uppercase tracking-[0.22em] text-white/80">
-              Book your jetski today
+              {t('hero.kicker')}
             </p>
             <h1 className="hero-title text-5xl sm:text-6xl md:text-7xl font-black leading-tight" itemProp="name">
               <span itemProp="provider">ELITEJETSKIS</span> <span className="text-[#58d4ff]">AE</span>
@@ -67,11 +69,11 @@ export default function Hero({ onBookNowClick }: HeroProps = {}) {
                 className="bg-[#E31E24] hover:bg-[#c41a20] text-white px-8 py-4 rounded-full font-semibold flex items-center gap-3 transition-all hover:scale-105 shadow-xl shadow-[#E31E24]/40"
                 aria-label="Book your jet ski tour now"
               >
-                <span>BOOK NOW</span>
+                <span>{t('hero.bookNow')}</span>
                 <ArrowRight size={24} aria-hidden="true" />
               </button>
               <span className="hidden sm:block text-sm uppercase tracking-[0.18em] text-white/70">
-                Dubai Marina • Burj Al Arab views • Pro instructors
+                {t('hero.subtitle')}
               </span>
             </div>
           </div>

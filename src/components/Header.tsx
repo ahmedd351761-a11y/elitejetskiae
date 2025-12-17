@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User, ShoppingCart, Menu, X } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface HeaderProps {
   onBookNowClick?: () => void;
@@ -8,11 +9,11 @@ interface HeaderProps {
 
 export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'ar'>('en');
+  const { language, setLanguage, t } = useLanguage();
   const cartCount = 0;
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'ar' : 'en');
+    setLanguage(language === 'en' ? 'ar' : 'en');
   };
 
   return (
@@ -37,7 +38,7 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
                 height="56"
               />
               <div className="hidden sm:block leading-tight uppercase text-white font-black tracking-tight">
-                <span className="text-[11px] tracking-[0.25em] text-white/70">Book your</span>
+                <span className="text-[11px] tracking-[0.25em] text-white/70">{t('header.bookYour')}</span>
                 <span className="text-lg block">Elite Jetskis AE</span>
               </div>
             </a>
@@ -48,7 +49,7 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
               onClick={onBookNowClick}
               className="bg-[#E31E24] hover:bg-[#c41a20] px-5 py-2 rounded-full text-sm font-semibold shadow-lg shadow-[#E31E24]/40 transition-all hover:-translate-y-0.5"
             >
-              Book Now
+              {t('header.bookNow')}
             </button>
 
             <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
@@ -76,7 +77,7 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
               onClick={onBookNowClick}
               className="bg-[#E31E24] px-4 py-2 rounded-full text-xs font-semibold shadow-lg shadow-[#E31E24]/40"
             >
-              Book
+              {t('header.book')}
             </button>
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -93,17 +94,17 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
               }}
               className="w-full bg-[#E31E24] px-4 py-3 rounded-full font-semibold shadow-lg shadow-[#E31E24]/40"
             >
-              Book Now
+              {t('header.bookNow')}
             </button>
 
             <button className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/10 transition-colors">
               <User size={22} />
-              <span>Account</span>
+              <span>{t('header.account')}</span>
             </button>
 
             <button className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/10 transition-colors">
               <ShoppingCart size={22} />
-              <span>Cart ({cartCount})</span>
+              <span>{t('header.cart')} ({cartCount})</span>
             </button>
 
             <button
@@ -111,7 +112,7 @@ export default function Header({ onBookNowClick, onHomeClick }: HeaderProps = {}
               className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/10 transition-colors"
             >
               <span className="text-2xl">{language === 'en' ? '🇬🇧' : '🇦🇪'}</span>
-              <span>Language: {language.toUpperCase()}</span>
+              <span>{t('header.language')}: {language.toUpperCase()}</span>
             </button>
           </div>
         )}
