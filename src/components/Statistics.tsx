@@ -11,12 +11,12 @@ export default function Statistics() {
           <div className="relative rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full min-h-[300px]">
             <img
               src="/12years.jpg"
-              alt="8 years of experience"
+              alt={t('stats.yearsExperience')}
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-0 left-0 right-0 bg-[#0A1128] p-6">
               <h3 className="text-5xl font-black text-white mb-1">8</h3>
-              <p className="text-xl text-white/90">years of experience</p>
+              <p className="text-xl text-white/90">{t('stats.yearsExperience')}</p>
             </div>
           </div>
 
@@ -27,7 +27,7 @@ export default function Statistics() {
               </div>
             </div>
             <h3 className="text-5xl font-black text-center mb-2">50,000+</h3>
-            <p className="text-xl text-center text-white/90">satisfied clients</p>
+            <p className="text-xl text-center text-white/90">{t('stats.satisfiedClients')}</p>
             <div className="mt-6 grid grid-cols-8 gap-2">
               {[...Array(24)].map((_, i) => (
                 <div

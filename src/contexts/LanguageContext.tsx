@@ -51,6 +51,8 @@ const translations: Record<Language, Record<string, string>> = {
     'packages.ultimate120.highlight': 'Full Dubai coastline sweep including Bluewaters & Ain Dubai.',
     
     // Statistics
+    'stats.yearsExperience': 'years of experience',
+    'stats.satisfiedClients': 'satisfied clients',
     'stats.languages': '2 Languages',
     'stats.languagesSub': 'EN AR',
     
@@ -171,6 +173,8 @@ const translations: Record<Language, Record<string, string>> = {
     'packages.ultimate120.highlight': 'مسح كامل لساحل دبي بما في ذلك بلو ووترز وعين دبي.',
     
     // Statistics
+    'stats.yearsExperience': 'سنوات من الخبرة',
+    'stats.satisfiedClients': 'عميل راضٍ',
     'stats.languages': 'لغتان',
     'stats.languagesSub': 'عربي إنجليزي',
     
