@@ -58,7 +58,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // About Us
     'about.title': 'ABOUT US',
-    'about.paragraph1': 'EliteJetskisAE is owned and operated by Abdullah Mubarak, a young entrepreneur passionate about watersports with years of experience in the industry.',
+    'about.paragraph1': 'EliteJetskisAE is owned and operated by Abdullah Mubarak, a young entrepreneur passionate about watersports with years of experience in the industry, partnering with Abad Trejo who is a Mexican investor.',
     'about.paragraph2': 'At EliteJetskisAE, we know what you are looking for and we\'ll meet your requirements; you can come & meet us down at \'EliteJetskisAE\' to create memories which will last forever.',
     'about.experiencedTeam': 'Experienced Team',
     'about.experiencedTeamDesc': 'EliteJetskisAE team has years of experience in the jet ski industry! We know what you are looking for and we will go beyond your expectation to make you have a wonderful time.',
@@ -281,7 +281,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // About Us
     'about.title': 'من نحن',
-    'about.paragraph1': 'إليت جت سكيز إي إي مملوكة ومدارة من قبل عبدالله مبارك، رجل أعمال شاب شغوف بالرياضات المائية مع سنوات من الخبرة في الصناعة.',
+    'about.paragraph1': 'إليت جت سكيز إي إي مملوكة ومدارة من قبل عبدالله مبارك، رجل أعمال شاب شغوف بالرياضات المائية مع سنوات من الخبرة في الصناعة، بالشراكة مع عباد تريخو وهو مستثمر مكسيكي.',
     'about.paragraph2': 'في إليت جت سكيز إي إي، نحن نعرف ما تبحث عنه وسنلبي متطلباتك؛ يمكنك القدوم ومقابلتنا في \'إليت جت سكيز إي إي\' لإنشاء ذكريات ستدوم إلى الأبد.',
     'about.experiencedTeam': 'فريق ذو خبرة',
     'about.experiencedTeamDesc': 'فريق إليت جت سكيز إي إي لديه سنوات من الخبرة في صناعة جت سكي! نحن نعرف ما تبحث عنه وسنتجاوز توقعاتك لنمنحك وقتاً رائعاً.',
