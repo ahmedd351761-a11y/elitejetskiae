@@ -1,11 +1,11 @@
 # Elite Jetskis AE - Robots.txt
-# https://elitejetskiae.com
+# https://www.elitejetskisae.com
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://elitejetskiae.com/sitemap.xml
+Sitemap: https://www.elitejetskisae.com/sitemap.xml
 
 # Crawl delay for politeness
 Crawl-delay: 1
