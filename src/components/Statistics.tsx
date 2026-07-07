@@ -1,4 +1,4 @@
-import { Award, Users, Globe } from 'lucide-react';
+import { Users, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Statistics() {
