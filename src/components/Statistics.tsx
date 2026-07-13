@@ -10,7 +10,7 @@ export default function Statistics() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="relative rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full min-h-[300px]">
             <img
-              src="/12years.jpg"
+              src="/8years.jpg"
               alt={t('stats.yearsExperience')}
               className="w-full h-full object-cover"
             />
