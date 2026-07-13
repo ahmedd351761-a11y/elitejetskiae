@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Clock, Users, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { fetchActivePackages } from '@/lib/packages';
 import { Package } from '@/types';
 import { formatPrice } from '@/utils/bookingUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -14,6 +14,7 @@ export default function PackageSelection({ onSelect }: Props) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [usingFallback, setUsingFallback] = useState(false);
 
   useEffect(() => {
     fetchPackages();
@@ -24,31 +25,27 @@ export default function PackageSelection({ onSelect }: Props) {
     setError('');
     
     try {
-      const { data, error: supabaseError } = await supabase
-        .from('packages')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order');
+      const result = await fetchActivePackages();
 
-      if (supabaseError) {
-        console.error('Supabase error:', supabaseError);
-        setError(`Failed to load packages: ${supabaseError.message}`);
-        setPackages([]);
-        return;
-      }
-
-      if (!data || data.length === 0) {
+      if (result.packages.length === 0) {
         setError('No packages are currently available. Please contact us directly.');
         setPackages([]);
+        setUsingFallback(false);
         return;
       }
 
-      setPackages(data);
+      setPackages(result.packages);
+      setUsingFallback(result.source === 'fallback');
+
+      if (result.source === 'fallback' && result.error) {
+        console.warn('Package fallback in use:', result.error);
+      }
     } catch (err) {
       console.error('Error fetching packages:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(`Unable to load packages: ${errorMessage}. Please try again or contact us.`);
       setPackages([]);
+      setUsingFallback(false);
     } finally {
       setLoading(false);
     }
@@ -130,6 +127,12 @@ export default function PackageSelection({ onSelect }: Props) {
       <h2 className="text-3xl font-black text-[#0A1128] mb-8 text-center">
         {t('booking.selectPackage')}
       </h2>
+
+      {usingFallback && (
+        <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 text-center text-amber-800 text-sm">
+          {t('booking.offlinePackagesNotice')}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {packages.map((pkg, index) => (

@@ -113,6 +113,9 @@ const translations: Record<Language, Record<string, string>> = {
     // Booking Flow
     'booking.selectPackage': 'Select Your Package',
     'booking.tryAgain': 'Try Again',
+    'booking.offlinePackagesNotice': 'Online booking is temporarily limited. You can still continue and complete your booking via WhatsApp.',
+    'booking.bookViaWhatsApp': 'Complete Booking on WhatsApp',
+    'booking.bookingServiceUnavailable': 'We could not save your booking online right now. You can still complete it instantly on WhatsApp.',
     'booking.select': 'Select',
     'booking.upToParticipants': 'Up to',
     'booking.participantsText': 'participants',
@@ -336,6 +339,9 @@ const translations: Record<Language, Record<string, string>> = {
     // Booking Flow
     'booking.selectPackage': 'اختر باقاتك',
     'booking.tryAgain': 'حاول مرة أخرى',
+    'booking.offlinePackagesNotice': 'الحجز عبر الإنترنت محدود مؤقتًا. يمكنك المتابعة وإكمال حجزك عبر واتساب.',
+    'booking.bookViaWhatsApp': 'إكمال الحجز عبر واتساب',
+    'booking.bookingServiceUnavailable': 'تعذر حفظ حجزك عبر الإنترنت الآن. يمكنك إكماله فورًا عبر واتساب.',
     'booking.select': 'اختر',
     'booking.upToParticipants': 'حتى',
     'booking.participantsText': 'مشاركين',

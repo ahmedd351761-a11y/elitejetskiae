@@ -84,10 +84,14 @@ This will create:
 
 1. **Check browser console** (F12 → Console tab)
 2. Look for errors like:
-   - `Failed to load packages: ...` - Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+   - `Failed to fetch` or `ERR_NAME_NOT_RESOLVED` - Your Supabase project URL is invalid or the project was deleted. Create a new Supabase project, update env vars, and redeploy.
    - `relation "packages" does not exist` - Run the SQL migration (Step 2)
 
-3. **Verify packages exist in Supabase**:
+3. **Verify the Supabase URL resolves**:
+   - Open your `VITE_SUPABASE_URL` in a browser (e.g. `https://xxxxx.supabase.co`)
+   - If it does not load, the project no longer exists — create a new one
+
+4. **Verify packages exist in Supabase**:
    - Go to Table Editor → `packages`
    - Should have 4 rows with `is_active = true`
 

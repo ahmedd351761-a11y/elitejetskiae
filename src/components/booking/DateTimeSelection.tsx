@@ -44,8 +44,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
         .neq('status', 'cancelled');
 
       if (fetchError) {
-        console.error('Error fetching availability:', fetchError);
-        setError(t('booking.failedToLoad'));
+        console.warn('Availability check unavailable, assuming slots are open:', fetchError);
         setBookedSlots(new Set());
         return;
       }
@@ -63,8 +62,7 @@ export default function DateTimeSelection({ package: pkg, onSelect, onBack }: Pr
       setBookedSlots(booked);
       console.log(`Loaded availability for ${date}: ${booked.size} slots booked`);
     } catch (err) {
-      console.error('Error fetching booked slots:', err);
-      setError(t('booking.unableToCheck'));
+      console.warn('Availability check unavailable, assuming slots are open:', err);
       setBookedSlots(new Set());
     } finally {
       setLoading(false);

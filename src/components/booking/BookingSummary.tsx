@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Calendar, Clock, User, Mail, Phone, Users, MessageCircle, Loader2 } from 'lucide-react';
 import { Package, BookingFormData } from '@/types';
 import { formatPrice } from '@/utils/bookingUtils';
+import { buildWhatsAppBookingUrl } from '@/utils/whatsappUtils';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface Props {
@@ -16,12 +17,20 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
   const [promoCode, setPromoCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showWhatsAppFallback, setShowWhatsAppFallback] = useState(false);
 
   const totalPrice = pkg.price_aed;
+  const whatsAppBookingUrl = buildWhatsAppBookingUrl({
+    packageName: pkg.name,
+    packageDuration: pkg.duration_minutes,
+    totalPrice,
+    bookingData,
+  });
 
   const handleConfirmBooking = async () => {
     setLoading(true);
     setError('');
+    setShowWhatsAppFallback(false);
 
     try {
       const response = await fetch('/.netlify/functions/createBooking', {
@@ -51,7 +60,10 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
           typeof result.error === 'string'
             ? result.error
             : result.error?.message || `Booking failed with status ${response.status}`;
-        throw new Error(message);
+        setError(t('booking.bookingServiceUnavailable'));
+        setShowWhatsAppFallback(true);
+        console.warn('Booking API failed:', message);
+        return;
       }
 
       if (!result.booking_reference) {
@@ -62,7 +74,9 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
     } catch (err) {
       console.error('Booking error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      setError(`Error: ${errorMessage}. Please check your information and try again.`);
+      setError(t('booking.bookingServiceUnavailable'));
+      setShowWhatsAppFallback(true);
+      console.warn('Booking API failed:', errorMessage);
     }
   };
 
@@ -184,7 +198,18 @@ export default function BookingSummary({ package: pkg, bookingData, onConfirm, o
 
         {error && (
           <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-            {error}
+            <p>{error}</p>
+            {showWhatsAppFallback && (
+              <a
+                href={whatsAppBookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-full font-semibold transition-colors"
+              >
+                <MessageCircle size={18} />
+                <span>{t('booking.bookViaWhatsApp')}</span>
+              </a>
+            )}
           </div>
         )}
 
