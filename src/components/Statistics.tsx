@@ -1,5 +1,6 @@
 import { Users, Globe } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import image8years from '/8years.jpg';
 
 export default function Statistics() {
   const { t } = useLanguage();
@@ -10,7 +11,7 @@ export default function Statistics() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="relative rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full min-h-[300px]">
             <img
-              src="/8years.jpg"
+              src={image8years}
               alt={t('stats.yearsExperience')}
               className="w-full h-full object-cover"
             />
